@@ -16,7 +16,7 @@ vendor/
 
 # Local session artifacts (review emails, etc.) — not part of the plugin
 emails/
+.claude/
 
 # Local credentials — never commit or publish
 credentials.md
-.claude/svn-credentials.local.md
