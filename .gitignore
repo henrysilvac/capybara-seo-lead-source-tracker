@@ -13,3 +13,10 @@ Thumbs.db
 # Dependencies (if ever introduced)
 node_modules/
 vendor/
+
+# Local session artifacts (review emails, etc.) — not part of the plugin
+emails/
+
+# Local credentials — never commit or publish
+credentials.md
+.claude/svn-credentials.local.md
