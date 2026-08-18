@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Capybara SEO Lead Source Tracker
  * Plugin URI: https://seo.pe
- * Description: Captures UTMs and click IDs, keeps them across page visits, and adds them to your WhatsApp messages via an auto-injected floating button, your existing buttons, and/or a shortcode — combinable. <a href="options-general.php?page=wa-lead-source-tracker">Configure the plugin</a>.
- * Version: 0.6.2
+ * Description: Captures UTMs and click IDs, keeps them across page visits, and adds them to your WhatsApp messages via an auto-injected floating button, your existing buttons, and/or a shortcode — combinable. <a href="options-general.php?page=capysele-lead-source-tracker">Configure the plugin</a>.
+ * Version: 0.7.0
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Author: Henry Silva
@@ -15,28 +15,28 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('WA_LS_VERSION', '0.6.2');
-define('WA_LS_PLUGIN_FILE', __FILE__);
-define('WA_LS_PLUGIN_DIR', plugin_dir_path(__FILE__));
-define('WA_LS_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('WA_LS_OPTION_KEY', 'wa_ls_settings');
+define('CAPYSELE_VERSION', '0.7.0');
+define('CAPYSELE_PLUGIN_FILE', __FILE__);
+define('CAPYSELE_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('CAPYSELE_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('CAPYSELE_OPTION_KEY', 'capysele_settings');
 
-require_once WA_LS_PLUGIN_DIR . 'includes/class-wa-ls-settings.php';
-require_once WA_LS_PLUGIN_DIR . 'includes/class-wa-ls-shortcode.php';
-require_once WA_LS_PLUGIN_DIR . 'includes/class-wa-ls-plugin.php';
+require_once CAPYSELE_PLUGIN_DIR . 'includes/class-capysele-settings.php';
+require_once CAPYSELE_PLUGIN_DIR . 'includes/class-capysele-shortcode.php';
+require_once CAPYSELE_PLUGIN_DIR . 'includes/class-capysele-plugin.php';
 
-function wa_ls_activate() {
-    $defaults = WA_LS_Settings::get_defaults();
-    $existing = get_option(WA_LS_OPTION_KEY, []);
+function capysele_activate() {
+    $defaults = CAPYSELE_Settings::get_defaults();
+    $existing = get_option(CAPYSELE_OPTION_KEY, []);
     if (!is_array($existing)) {
         $existing = [];
     }
-    update_option(WA_LS_OPTION_KEY, wp_parse_args($existing, $defaults));
+    update_option(CAPYSELE_OPTION_KEY, wp_parse_args($existing, $defaults));
 }
-register_activation_hook(__FILE__, 'wa_ls_activate');
+register_activation_hook(__FILE__, 'capysele_activate');
 
-function wa_ls_boot_plugin() {
-    $plugin = new WA_LS_Plugin();
+function capysele_boot_plugin() {
+    $plugin = new CAPYSELE_Plugin();
     $plugin->init();
 }
-wa_ls_boot_plugin();
+capysele_boot_plugin();

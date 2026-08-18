@@ -1,17 +1,17 @@
 (function () {
   'use strict';
 
-  if (typeof wa_ls_config === 'undefined') {
+  if (typeof capysele_config === 'undefined') {
     return;
   }
 
-  const STORAGE_KEY = wa_ls_config.storageKey || 'wa_ls_data';
-  const FALLBACK_LABEL = wa_ls_config.fallbackLabel || 'N/D';
+  const STORAGE_KEY = capysele_config.storageKey || 'capysele_data';
+  const FALLBACK_LABEL = capysele_config.fallbackLabel || 'N/D';
 
   function isExternalReferrer(referrer) {
     if (!referrer) return false;
     try {
-      var siteOrigin = new URL(wa_ls_config.siteUrl).origin;
+      var siteOrigin = new URL(capysele_config.siteUrl).origin;
       var referrerOrigin = new URL(referrer).origin;
       return referrerOrigin !== siteOrigin;
     } catch (e) {
@@ -88,7 +88,7 @@
   }
 
   function detectChannel(data) {
-    const ch = (wa_ls_config.channels || {});
+    const ch = (capysele_config.channels || {});
     const source = (data.utm_source || '').toLowerCase();
     const medium = (data.utm_medium || '').toLowerCase();
 
@@ -223,12 +223,12 @@
   }
 
   function resolvePhone(button) {
-    const dataPhone = button.getAttribute('data-wa-phone');
+    const dataPhone = button.getAttribute('data-capysele-phone');
     if (dataPhone) {
       return String(dataPhone).replace(/\D+/g, '');
     }
 
-    return String(wa_ls_config.phone || '').replace(/\D+/g, '');
+    return String(capysele_config.phone || '').replace(/\D+/g, '');
   }
 
   function applyJoinchat(button, data) {
@@ -242,7 +242,7 @@
     }
     if (!('message_send' in settings)) return false;
 
-    var phone = String(settings.telephone || wa_ls_config.phone || '').replace(/\D+/g, '');
+    var phone = String(settings.telephone || capysele_config.phone || '').replace(/\D+/g, '');
     if (!phone) return false;
 
     // Joinchat lee data-settings en su init y lo guarda en memoria,
@@ -254,17 +254,17 @@
       e.stopImmediatePropagation();
       e.preventDefault();
 
-      var message = buildMessage(wa_ls_config.template, data);
+      var message = buildMessage(capysele_config.template, data);
       var url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(message);
       window.open(url, '_blank', 'noopener,noreferrer');
 
-      if (wa_ls_config.debug) {
-        console.log('WA Lead Source Tracker: Joinchat interceptado.', { phone: phone, message: message });
+      if (capysele_config.debug) {
+        console.log('Capybara SEO Lead Source Tracker: Joinchat interceptado.', { phone: phone, message: message });
       }
     }, true); // capture = true → se ejecuta antes que los handlers de Joinchat
 
-    if (wa_ls_config.debug) {
-      console.log('WA Lead Source Tracker: Joinchat listener registrado.', button);
+    if (capysele_config.debug) {
+      console.log('Capybara SEO Lead Source Tracker: Joinchat listener registrado.', button);
     }
     return true;
   }
@@ -272,12 +272,12 @@
   function applyToButtons(data) {
     // El botón de shortcode siempre está activo; flotante y selector CSS son
     // interruptores independientes y pueden combinarse entre sí.
-    var selectorGroups = ['.wa-ls-button'];
-    if (wa_ls_config.floatingEnabled) {
-      selectorGroups.push('.wa-ls-floating-button');
+    var selectorGroups = ['.capysele-button'];
+    if (capysele_config.floatingEnabled) {
+      selectorGroups.push('.capysele-floating-button');
     }
-    if (wa_ls_config.selectorEnabled && wa_ls_config.selector) {
-      selectorGroups.push(wa_ls_config.selector);
+    if (capysele_config.selectorEnabled && capysele_config.selector) {
+      selectorGroups.push(capysele_config.selector);
     }
 
     var seen = new Set();
@@ -287,8 +287,8 @@
       try {
         found = document.querySelectorAll(sel);
       } catch (e) {
-        if (wa_ls_config.debug) {
-          console.warn('WA Lead Source Tracker: selector inválido, se omite.', sel);
+        if (capysele_config.debug) {
+          console.warn('Capybara SEO Lead Source Tracker: selector inválido, se omite.', sel);
         }
         return;
       }
@@ -310,8 +310,8 @@
 
       // Elemento <a> estándar
       if (button.tagName.toLowerCase() !== 'a') {
-        if (wa_ls_config.debug) {
-          console.warn('WA Lead Source Tracker: el elemento no es <a> ni Joinchat, ignorado.', button);
+        if (capysele_config.debug) {
+          console.warn('Capybara SEO Lead Source Tracker: el elemento no es <a> ni Joinchat, ignorado.', button);
         }
         return;
       }
@@ -319,7 +319,7 @@
       const phone = resolvePhone(button);
       if (!phone) return;
 
-      const message = buildMessage(wa_ls_config.template, data);
+      const message = buildMessage(capysele_config.template, data);
       const url = 'https://wa.me/' + encodeURIComponent(phone) + '?text=' + encodeURIComponent(message);
       button.setAttribute('href', url);
       button.setAttribute('target', '_blank');
@@ -332,8 +332,8 @@
     const data = saveData(current);
     applyToButtons(data);
 
-    if (wa_ls_config.debug) {
-      console.log('WA Lead Source Tracker data:', data);
+    if (capysele_config.debug) {
+      console.log('Capybara SEO Lead Source Tracker data:', data);
     }
   }
 

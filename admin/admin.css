@@ -1,25 +1,25 @@
-.wa-ls-wrap .wa-ls-placeholders {
+.capysele-wrap .capysele-placeholders {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 12px;
 }
 
-.wa-ls-wrap .wa-ls-placeholders code {
+.capysele-wrap .capysele-placeholders code {
   padding: 6px 8px;
   background: #f6f7f7;
   border: 1px solid #dcdcde;
   border-radius: 4px;
 }
 
-.wa-ls-mode-guide {
+.capysele-mode-guide {
   margin: 10px 0 0;
   padding: 0;
   list-style: none;
   max-width: 720px;
 }
 
-.wa-ls-mode-guide li {
+.capysele-mode-guide li {
   padding: 10px 14px;
   margin-bottom: 8px;
   background: #f6f7f7;
@@ -27,7 +27,7 @@
   border-radius: 2px;
 }
 
-.wa-ls-mode-guide li strong {
+.capysele-mode-guide li strong {
   display: block;
   margin-bottom: 2px;
 }

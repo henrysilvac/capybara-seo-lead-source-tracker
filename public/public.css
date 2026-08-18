@@ -1,9 +1,9 @@
-.wa-ls-button {
+.capysele-button {
   display: inline-block;
   text-decoration: none;
 }
 
-.wa-ls-floating-button {
+.capysele-floating-button {
   position: fixed;
   right: 20px;
   bottom: 20px;
@@ -20,14 +20,14 @@
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.wa-ls-floating-button:hover,
-.wa-ls-floating-button:focus {
+.capysele-floating-button:hover,
+.capysele-floating-button:focus {
   transform: scale(1.06);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 
 @media (max-width: 480px) {
-  .wa-ls-floating-button {
+  .capysele-floating-button {
     right: 16px;
     bottom: 16px;
     width: 52px;

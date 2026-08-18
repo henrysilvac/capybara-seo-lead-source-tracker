@@ -3,14 +3,14 @@ if (!defined('ABSPATH')) {
     exit;
 }
 ?>
-<div class="wrap wa-ls-wrap">
+<div class="wrap capysele-wrap">
     <h1><?php echo esc_html('Capybara SEO Lead Source Tracker'); ?></h1>
-    <p><?php esc_html_e('Captures UTM parameters and click IDs, keeps them across page visits (first-touch attribution), and automatically includes them in the WhatsApp message of your floating button, your existing buttons, and/or the [wa_lead_button] shortcode.', 'capybara-seo-lead-source-tracker'); ?></p>
+    <p><?php esc_html_e('Captures UTM parameters and click IDs, keeps them across page visits (first-touch attribution), and automatically includes them in the WhatsApp message of your floating button, your existing buttons, and/or the [capysele_button] shortcode.', 'capybara-seo-lead-source-tracker'); ?></p>
 
     <form method="post" action="options.php">
         <?php
-        settings_fields('wa_ls_settings_group');
-        do_settings_sections('wa-lead-source-tracker');
+        settings_fields('capysele_settings_group');
+        do_settings_sections('capysele-lead-source-tracker');
         submit_button(__('Save changes', 'capybara-seo-lead-source-tracker'));
         ?>
     </form>
@@ -25,7 +25,7 @@ if (!defined('ABSPATH')) {
     </ol>
 
     <h2><?php esc_html_e('Placeholder reference', 'capybara-seo-lead-source-tracker'); ?></h2>
-    <div class="wa-ls-placeholders">
+    <div class="capysele-placeholders">
         <code>{channel}</code>
         <code>{utm_source}</code>
         <code>{utm_medium}</code>
