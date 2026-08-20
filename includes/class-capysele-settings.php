@@ -194,7 +194,7 @@ class CAPYSELE_Settings {
             case 'message_template':
                 ?>
                 <textarea name="<?php echo esc_attr(CAPYSELE_OPTION_KEY); ?>[message_template]" rows="8" class="large-text code"><?php echo esc_textarea($settings['message_template']); ?></textarea>
-                <p class="description"><?php esc_html_e('Available placeholders: {channel}, {utm_source}, {utm_medium}, {utm_campaign}, {utm_content}, {utm_term}, {gclid}, {gbraid}, {wbraid}, {fbclid}, {referrer}, {landing_page}, {captured_at}', 'capybara-seo-lead-source-tracker'); ?></p>
+                <p class="description"><?php esc_html_e('Available placeholders: {channel}, {utm_source}, {utm_medium}, {utm_campaign}, {utm_content}, {utm_term}, {gclid}, {gbraid}, {wbraid}, {fbclid}, {referrer}, {exit_page}, {landing_page} (legacy alias of {exit_page}), {captured_at}', 'capybara-seo-lead-source-tracker'); ?></p>
                 <?php
                 break;
         }

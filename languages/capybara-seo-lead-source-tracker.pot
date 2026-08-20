@@ -1,202 +1,228 @@
 # Copyright (C) 2026 Henry Silva
-# This file is distributed under the same license as the capybara-seo-lead-source-tracker plugin.
+# This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Capybara SEO Lead Source Tracker 0.6.1\n"
+"Project-Id-Version: Capybara SEO Lead Source Tracker 0.7.1\n"
 "Report-Msgid-Bugs-To: https://seo.pe\n"
-"POT-Creation-Date: 2026-04-09T00:00:00+00:00\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-08-20T18:19:52+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: capybara-seo-lead-source-tracker\n"
 
-#. Plugin Name
+#. Plugin Name of the plugin
+#: capybara-seo-lead-source-tracker.php
 msgid "Capybara SEO Lead Source Tracker"
 msgstr ""
 
-#. Description
-msgid "Captures UTMs and click IDs, keeps them across page visits, and adds them to your WhatsApp messages via an auto-injected floating button, your existing buttons, and/or a shortcode — combinable. <a href=\"options-general.php?page=wa-lead-source-tracker\">Configure the plugin</a>."
+#. Plugin URI of the plugin
+#: capybara-seo-lead-source-tracker.php
+msgid "https://seo.pe"
 msgstr ""
 
-#: includes/class-wa-ls-plugin.php
-msgid "Settings"
+#. Description of the plugin
+#: capybara-seo-lead-source-tracker.php
+msgid "Captures UTMs and click IDs, keeps them across page visits, and adds them to your WhatsApp messages via an auto-injected floating button, your existing buttons, and/or a shortcode — combinable. <a href=\"options-general.php?page=capysele-lead-source-tracker\">Configure the plugin</a>."
 msgstr ""
 
-#: includes/class-wa-ls-plugin.php
-msgid "Chat on WhatsApp"
+#. Author of the plugin
+#: capybara-seo-lead-source-tracker.php
+msgid "Henry Silva"
 msgstr ""
 
-#: includes/class-wa-ls-plugin.php
-msgid "Set up how the WhatsApp button appears below: turn on the floating button for a zero-setup button, add tracking to a button you already have with CSS Selector, or insert the [wa_lead_button] shortcode anywhere. These can be combined."
+#: admin/settings-page.php:8
+msgid "Captures UTM parameters and click IDs, keeps them across page visits (first-touch attribution), and automatically includes them in the WhatsApp message of your floating button, your existing buttons, and/or the [capysele_button] shortcode."
 msgstr ""
 
-#: includes/class-wa-ls-plugin.php
-msgid "N/A"
-msgstr ""
-
-#: includes/class-wa-ls-plugin.php
-msgid "Google Ads"
-msgstr ""
-
-#: includes/class-wa-ls-plugin.php
-msgid "Meta Ads"
-msgstr ""
-
-#: includes/class-wa-ls-plugin.php
-msgid "Organic"
-msgstr ""
-
-#: includes/class-wa-ls-plugin.php
-msgid "Referral"
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "Hi, I'd like more information.\n\n*[Do not modify — reference code to assign you the right advisor]:*\n[channel:{channel}]\n[source:{utm_source}]\n[medium:{utm_medium}]\n[campaign:{utm_campaign}]\n[term:{utm_term}]\n[gclid:{gclid}]"
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "1. Enable & WhatsApp number"
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "Enable plugin"
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "WhatsApp number"
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "2. Where should the WhatsApp button appear?"
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "Floating button"
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "CSS Selector"
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "CSS selector value"
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "3. Message & attribution data"
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "Message template"
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "4. Advanced"
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "Debug mode"
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "Turn the plugin on and set the WhatsApp number that receives messages when no button-specific number is defined."
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "These options are independent — turn on any combination that matches your situation. All of them share the same WhatsApp number and message template above."
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "Floating button — turn this on if you don't have a WhatsApp button yet."
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "Automatically adds a ready-made button to every page. Zero setup. If you also have an existing WhatsApp button elsewhere (theme, page builder, another plugin) that isn't tracked via CSS Selector below, turning this on too will show two buttons."
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "CSS Selector — turn this on if you already have a working WhatsApp button or link."
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "Adds tracking to your existing button (from your theme, a page builder, or another plugin such as Joinchat) instead of replacing it. Requires the CSS selector that matches your button below. Can be combined with the floating button — for example, keep your existing button tracked and add the floating button on pages that don't have one."
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "Shortcode — always available, no toggle needed."
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "Insert [wa_lead_button] in any page, post, or widget to render a plugin-generated button exactly where you want it. Works independently of the two toggles above."
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "This is the message pre-filled in WhatsApp when a visitor clicks the button. Placeholders are replaced with the captured data; a line is removed automatically if its placeholder has no data (e.g. no {gclid} on a visit with no Google Ads click ID)."
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "Settings for troubleshooting. Keep debug mode off in production; turn it on temporarily to confirm the plugin is capturing UTMs correctly."
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "Enable frontend functionality. Turn off to fully disable the button and tracking without deactivating the plugin."
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "Show captured data in the browser console (for troubleshooting only)."
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "Automatically add the floating WhatsApp button to every page."
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "Add tracking to existing WhatsApp buttons/links matched by the CSS selector below."
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "International format, digits only (country code + number, no + no spaces)."
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "Only used when \"CSS Selector\" above is enabled — ignored otherwise. Example: .js-whatsapp-track or a[href*=\"wa.me\"]"
-msgstr ""
-
-#: includes/class-wa-ls-settings.php
-msgid "Available placeholders: {channel}, {utm_source}, {utm_medium}, {utm_campaign}, {utm_content}, {utm_term}, {gclid}, {gbraid}, {wbraid}, {fbclid}, {referrer}, {landing_page}, {captured_at}"
-msgstr ""
-
-#: includes/class-wa-ls-shortcode.php
-msgid "Write to us on WhatsApp"
-msgstr ""
-
-#: admin/settings-page.php
-msgid "Captures UTM parameters and click IDs, keeps them across page visits (first-touch attribution), and automatically includes them in the WhatsApp message of your floating button, your existing buttons, and/or the [wa_lead_button] shortcode."
-msgstr ""
-
-#: admin/settings-page.php
+#: admin/settings-page.php:14
 msgid "Save changes"
 msgstr ""
 
-#: admin/settings-page.php
+#: admin/settings-page.php:20
 msgid "Quick setup"
 msgstr ""
 
-#: admin/settings-page.php
+#: admin/settings-page.php:22
 msgid "Set your WhatsApp number and save (section 1)."
 msgstr ""
 
-#: admin/settings-page.php
+#: admin/settings-page.php:23
 msgid "Turn on the button placement(s) that match your situation, following the guide in section 2."
 msgstr ""
 
-#: admin/settings-page.php
+#: admin/settings-page.php:24
 msgid "Test with a URL that includes UTM parameters, for example ?utm_source=google&utm_medium=cpc&utm_campaign=test"
 msgstr ""
 
-#: admin/settings-page.php
+#: admin/settings-page.php:27
 msgid "Placeholder reference"
+msgstr ""
+
+#: admin/settings-page.php:44
+msgid "Use {exit_page} for the complete URL where the visitor clicks. {landing_page} is a legacy alias that returns the same click-time URL and remains available for existing templates."
+msgstr ""
+
+#: includes/class-capysele-plugin.php:24
+msgid "Settings"
+msgstr ""
+
+#: includes/class-capysele-plugin.php:99
+msgid "N/A"
+msgstr ""
+
+#: includes/class-capysele-plugin.php:101
+msgid "Google Ads"
+msgstr ""
+
+#: includes/class-capysele-plugin.php:102
+msgid "Meta Ads"
+msgstr ""
+
+#: includes/class-capysele-plugin.php:103
+msgid "Organic"
+msgstr ""
+
+#: includes/class-capysele-plugin.php:104
+msgid "Referral"
+msgstr ""
+
+#: includes/class-capysele-plugin.php:121
+msgid "Chat on WhatsApp"
+msgstr ""
+
+#: includes/class-capysele-plugin.php:142
+msgid "Set up how the WhatsApp button appears below: turn on the floating button for a zero-setup button, add tracking to a button you already have with CSS Selector, or insert the [capysele_button] shortcode anywhere. These can be combined."
+msgstr ""
+
+#: includes/class-capysele-settings.php:11
+msgid ""
+"Hi, I'd like more information.\n"
+"\n"
+"*[Do not modify — reference code to assign you the right advisor]:*\n"
+"[channel:{channel}]\n"
+"[source:{utm_source}]\n"
+"[medium:{utm_medium}]\n"
+"[campaign:{utm_campaign}]\n"
+"[term:{utm_term}]\n"
+"[gclid:{gclid}]"
+msgstr ""
+
+#: includes/class-capysele-settings.php:49
+msgid "1. Enable & WhatsApp number"
+msgstr ""
+
+#: includes/class-capysele-settings.php:52
+msgid "Enable plugin"
+msgstr ""
+
+#: includes/class-capysele-settings.php:53
+msgid "WhatsApp number"
+msgstr ""
+
+#: includes/class-capysele-settings.php:57
+msgid "2. Where should the WhatsApp button appear?"
+msgstr ""
+
+#: includes/class-capysele-settings.php:60
+msgid "Floating button"
+msgstr ""
+
+#: includes/class-capysele-settings.php:61
+msgid "CSS Selector"
+msgstr ""
+
+#: includes/class-capysele-settings.php:62
+msgid "CSS selector value"
+msgstr ""
+
+#: includes/class-capysele-settings.php:66
+msgid "3. Message & attribution data"
+msgstr ""
+
+#: includes/class-capysele-settings.php:69
+msgid "Message template"
+msgstr ""
+
+#: includes/class-capysele-settings.php:73
+msgid "4. Advanced"
+msgstr ""
+
+#: includes/class-capysele-settings.php:76
+msgid "Debug mode"
+msgstr ""
+
+#: includes/class-capysele-settings.php:103
+msgid "Turn the plugin on and set the WhatsApp number that receives messages when no button-specific number is defined."
+msgstr ""
+
+#: includes/class-capysele-settings.php:108
+msgid "These options are independent — turn on any combination that matches your situation. All of them share the same WhatsApp number and message template above."
+msgstr ""
+
+#: includes/class-capysele-settings.php:111
+msgid "Floating button — turn this on if you don't have a WhatsApp button yet."
+msgstr ""
+
+#: includes/class-capysele-settings.php:112
+msgid "Automatically adds a ready-made button to every page. Zero setup. If you also have an existing WhatsApp button elsewhere (theme, page builder, another plugin) that isn't tracked via CSS Selector below, turning this on too will show two buttons."
+msgstr ""
+
+#: includes/class-capysele-settings.php:115
+msgid "CSS Selector — turn this on if you already have a working WhatsApp button or link."
+msgstr ""
+
+#: includes/class-capysele-settings.php:116
+msgid "Adds tracking to your existing button (from your theme, a page builder, or another plugin such as Joinchat) instead of replacing it. Requires the CSS selector that matches your button below. Can be combined with the floating button — for example, keep your existing button tracked and add the floating button on pages that don't have one."
+msgstr ""
+
+#: includes/class-capysele-settings.php:119
+msgid "Shortcode — always available, no toggle needed."
+msgstr ""
+
+#: includes/class-capysele-settings.php:120
+msgid "Insert [capysele_button] in any page, post, or widget to render a plugin-generated button exactly where you want it. Works independently of the two toggles above."
+msgstr ""
+
+#: includes/class-capysele-settings.php:127
+msgid "This is the message pre-filled in WhatsApp when a visitor clicks the button. Placeholders are replaced with the captured data; a line is removed automatically if its placeholder has no data (e.g. no {gclid} on a visit with no Google Ads click ID)."
+msgstr ""
+
+#: includes/class-capysele-settings.php:131
+msgid "Settings for troubleshooting. Keep debug mode off in production; turn it on temporarily to confirm the plugin is capturing UTMs correctly."
+msgstr ""
+
+#: includes/class-capysele-settings.php:167
+msgid "Enable frontend functionality. Turn off to fully disable the button and tracking without deactivating the plugin."
+msgstr ""
+
+#: includes/class-capysele-settings.php:168
+msgid "Show captured data in the browser console (for troubleshooting only)."
+msgstr ""
+
+#: includes/class-capysele-settings.php:169
+msgid "Automatically add the floating WhatsApp button to every page."
+msgstr ""
+
+#: includes/class-capysele-settings.php:170
+msgid "Add tracking to existing WhatsApp buttons/links matched by the CSS selector below."
+msgstr ""
+
+#: includes/class-capysele-settings.php:183
+msgid "International format, digits only (country code + number, no + no spaces)."
+msgstr ""
+
+#: includes/class-capysele-settings.php:190
+msgid "Only used when \"CSS Selector\" above is enabled — ignored otherwise. Example: .js-whatsapp-track or a[href*=\"wa.me\"]"
+msgstr ""
+
+#: includes/class-capysele-settings.php:197
+msgid "Available placeholders: {channel}, {utm_source}, {utm_medium}, {utm_campaign}, {utm_content}, {utm_term}, {gclid}, {gbraid}, {wbraid}, {fbclid}, {referrer}, {exit_page}, {landing_page} (legacy alias of {exit_page}), {captured_at}"
+msgstr ""
+
+#: includes/class-capysele-shortcode.php:11
+msgid "Write to us on WhatsApp"
 msgstr ""

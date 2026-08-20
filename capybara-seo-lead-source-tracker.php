@@ -3,7 +3,7 @@
  * Plugin Name: Capybara SEO Lead Source Tracker
  * Plugin URI: https://seo.pe
  * Description: Captures UTMs and click IDs, keeps them across page visits, and adds them to your WhatsApp messages via an auto-injected floating button, your existing buttons, and/or a shortcode — combinable. <a href="options-general.php?page=capysele-lead-source-tracker">Configure the plugin</a>.
- * Version: 0.7.0
+ * Version: 0.7.1
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Author: Henry Silva
@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('CAPYSELE_VERSION', '0.7.0');
+define('CAPYSELE_VERSION', '0.7.1');
 define('CAPYSELE_PLUGIN_FILE', __FILE__);
 define('CAPYSELE_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('CAPYSELE_PLUGIN_URL', plugin_dir_url(__FILE__));

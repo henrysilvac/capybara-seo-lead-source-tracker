@@ -36,7 +36,10 @@ if (!defined('ABSPATH')) {
         <code>{gbraid}</code>
         <code>{wbraid}</code>
         <code>{fbclid}</code>
+        <code>{referrer}</code>
+        <code>{exit_page}</code>
         <code>{landing_page}</code>
         <code>{captured_at}</code>
     </div>
+    <p class="description"><?php esc_html_e('Use {exit_page} for the complete URL where the visitor clicks. {landing_page} is a legacy alias that returns the same click-time URL and remains available for existing templates.', 'capybara-seo-lead-source-tracker'); ?></p>
 </div>

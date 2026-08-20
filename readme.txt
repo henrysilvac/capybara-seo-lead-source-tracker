@@ -3,9 +3,9 @@ Contributors: capybaraseo
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=paypal@ilmaistro.pe&currency_code=USD
 Tags: whatsapp, utm, tracking, leads, attribution
 Requires at least: 6.0
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.7.0
+Stable tag: 0.7.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Author URI: https://seo.pe
@@ -24,12 +24,15 @@ Capybara SEO Lead Source Tracker captures UTM parameters and click IDs (gclid, g
 * Lines with no captured data are omitted from the WhatsApp message
 * Combinable button placements: Floating button (auto-injected, zero setup) and CSS Selector (reuse existing buttons) can both be turned on at once, plus the always-available [capysele_button] shortcode — all sharing the same number and tracking
 * Customizable message template with placeholders
-* Multilingual: English and Spanish included. Language is set automatically based on the WordPress site locale.
+* Click-time page tracking: {exit_page} reports the complete URL where the visitor clicks, including its query string and fragment
+* Translation-ready: approved locales are delivered separately through WordPress.org language packs based on the WordPress site or user locale
 * Debug mode: logs captured data to the browser console
 
 **Available placeholders for the message template:**
 
-{channel}, {utm_source}, {utm_medium}, {utm_campaign}, {utm_content}, {utm_term}, {gclid}, {gbraid}, {wbraid}, {fbclid}, {landing_page}, {captured_at}
+{channel}, {utm_source}, {utm_medium}, {utm_campaign}, {utm_content}, {utm_term}, {gclid}, {gbraid}, {wbraid}, {fbclid}, {referrer}, {exit_page}, {landing_page}, {captured_at}
+
+Use {exit_page} for new templates. The legacy {landing_page} placeholder remains supported and now returns the same click-time URL for backward compatibility.
 
 == Installation ==
 
@@ -61,7 +64,18 @@ The first UTM parameters captured during a user's session are stored and kept ev
 
 Lines in the message template whose placeholder has no captured value are automatically removed from the WhatsApp message.
 
+== Upgrade Notice ==
+
+= 0.7.1 =
+Adds {exit_page} for the complete click-time URL. Existing {landing_page} templates remain compatible and now receive that same URL; saved attribution data and settings require no migration.
+
 == Changelog ==
+
+= 0.7.1 =
+* Added {exit_page}, the recommended placeholder for the complete URL at the moment a visitor clicks, including query strings and fragments.
+* Changed the legacy {landing_page} placeholder to return the same click-time URL while preserving compatibility with existing message templates.
+* Preserved first-touch UTM, click ID, and referrer attribution without changing saved settings or clearing capysele_data.
+* Corrected the readme Features list, which still described bundled English/Spanish translations after 0.7.0 removed the bundled .po/.mo files; it now describes translations as delivered through WordPress.org language packs.
 
 = 0.7.0 =
 * Renamed internal PHP/JS/CSS identifiers (constants, classes, option key, shortcode, script/style handles, JS global, localStorage key, CSS classes) from the `wa_ls`/`WA_LS`/`wa-ls` prefix to `capysele`, per WordPress.org review feedback that the old prefix (inherited from an earlier codename) wasn't distinctive. The shortcode is now [capysele_button].

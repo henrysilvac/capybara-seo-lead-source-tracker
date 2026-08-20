@@ -132,6 +132,8 @@
   }
 
   function normalizeData(data) {
+    const clickPage = window.location.href;
+
     return {
       channel: detectChannel(data) || '',
       utm_source: data.utm_source || FALLBACK_LABEL,
@@ -144,7 +146,8 @@
       wbraid: data.wbraid || FALLBACK_LABEL,
       fbclid: data.fbclid || FALLBACK_LABEL,
       referrer: data.referrer || FALLBACK_LABEL,
-      landing_page: data.landing_page || window.location.href,
+      exit_page: clickPage,
+      landing_page: clickPage,
       captured_at: data.captured_at || new Date().toISOString()
     };
   }
@@ -165,6 +168,7 @@
       '{wbraid}': data.wbraid,
       '{fbclid}': data.fbclid,
       '{referrer}': data.referrer,
+      '{exit_page}': data.exit_page,
       '{landing_page}': data.landing_page,
       '{captured_at}': data.captured_at
     };
@@ -182,6 +186,7 @@
       '{wbraid}': !!raw.wbraid,
       '{fbclid}': !!raw.fbclid,
       '{referrer}': !!raw.referrer,
+      '{exit_page}': true,
       '{landing_page}': true,
       '{captured_at}': true
     };
@@ -319,11 +324,16 @@
       const phone = resolvePhone(button);
       if (!phone) return;
 
-      const message = buildMessage(capysele_config.template, data);
-      const url = 'https://wa.me/' + encodeURIComponent(phone) + '?text=' + encodeURIComponent(message);
-      button.setAttribute('href', url);
-      button.setAttribute('target', '_blank');
-      button.setAttribute('rel', 'noopener noreferrer');
+      const updateLink = function () {
+        const message = buildMessage(capysele_config.template, data);
+        const url = 'https://wa.me/' + encodeURIComponent(phone) + '?text=' + encodeURIComponent(message);
+        button.setAttribute('href', url);
+        button.setAttribute('target', '_blank');
+        button.setAttribute('rel', 'noopener noreferrer');
+      };
+
+      updateLink();
+      button.addEventListener('click', updateLink, true);
     });
   }
 
