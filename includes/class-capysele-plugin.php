@@ -96,12 +96,18 @@ class CAPYSELE_Plugin {
             'debug' => !empty($settings['debug']),
             'storageKey' => 'capysele_data',
             'siteUrl' => home_url('/'),
+            'attributionTtlMs' => CAPYSELE_Settings::get_attribution_ttl_ms(),
             'fallbackLabel' => __('N/A', 'capybara-seo-lead-source-tracker'),
             'channels' => [
                 'google_ads' => __('Google Ads', 'capybara-seo-lead-source-tracker'),
                 'meta_ads'   => __('Meta Ads', 'capybara-seo-lead-source-tracker'),
                 'organic'    => __('Organic', 'capybara-seo-lead-source-tracker'),
                 'referral'   => __('Referral', 'capybara-seo-lead-source-tracker'),
+                'ai_chatgpt'    => __('AI - ChatGPT', 'capybara-seo-lead-source-tracker'),
+                'ai_claude'     => __('AI - Claude', 'capybara-seo-lead-source-tracker'),
+                'ai_gemini'     => __('AI - Gemini', 'capybara-seo-lead-source-tracker'),
+                'ai_copilot'    => __('AI - Copilot', 'capybara-seo-lead-source-tracker'),
+                'ai_perplexity' => __('AI - Perplexity', 'capybara-seo-lead-source-tracker'),
             ],
         ]);
     }

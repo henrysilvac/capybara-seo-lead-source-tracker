@@ -4,6 +4,19 @@ if (!defined('ABSPATH')) {
 }
 
 class CAPYSELE_Settings {
+    // First-touch attribution is kept in the visitor's browser for this many
+    // days, counted from the initial capture (never renewed by later visits).
+    const DEFAULT_ATTRIBUTION_DAYS = 7;
+
+    public static function get_attribution_days() {
+        $days = absint(self::DEFAULT_ATTRIBUTION_DAYS);
+        return $days > 0 ? $days : 7;
+    }
+
+    public static function get_attribution_ttl_ms() {
+        return self::get_attribution_days() * DAY_IN_SECONDS * 1000;
+    }
+
     public static function get_defaults() {
         return [
             'enabled' => 1,
@@ -165,7 +178,7 @@ class CAPYSELE_Settings {
             case 'selector_enabled':
                 $checkbox_labels = [
                     'enabled'          => __('Enable frontend functionality. Turn off to fully disable the button and tracking without deactivating the plugin.', 'capybara-seo-lead-source-tracker'),
-                    'debug'            => __('Show captured data in the browser console (for troubleshooting only).', 'capybara-seo-lead-source-tracker'),
+                    'debug'            => __('Show captured data, its capture and expiry dates, and why the channel was assigned in the browser console (for troubleshooting only).', 'capybara-seo-lead-source-tracker'),
                     'floating_enabled' => __('Automatically add the floating WhatsApp button to every page.', 'capybara-seo-lead-source-tracker'),
                     'selector_enabled' => __('Add tracking to existing WhatsApp buttons/links matched by the CSS selector below.', 'capybara-seo-lead-source-tracker'),
                 ];
@@ -194,7 +207,7 @@ class CAPYSELE_Settings {
             case 'message_template':
                 ?>
                 <textarea name="<?php echo esc_attr(CAPYSELE_OPTION_KEY); ?>[message_template]" rows="8" class="large-text code"><?php echo esc_textarea($settings['message_template']); ?></textarea>
-                <p class="description"><?php esc_html_e('Available placeholders: {channel}, {utm_source}, {utm_medium}, {utm_campaign}, {utm_content}, {utm_term}, {gclid}, {gbraid}, {wbraid}, {fbclid}, {referrer}, {exit_page}, {landing_page} (legacy alias of {exit_page}), {captured_at}', 'capybara-seo-lead-source-tracker'); ?></p>
+                <p class="description"><?php esc_html_e('Available placeholders: {channel}, {utm_source}, {utm_medium}, {utm_campaign}, {utm_content}, {utm_term}, {gclid}, {gbraid}, {wbraid}, {fbclid}, {referrer}, {exit_page}, {exit_page_title}, {landing_page} (legacy alias of {exit_page}), {captured_at}', 'capybara-seo-lead-source-tracker'); ?></p>
                 <?php
                 break;
         }
