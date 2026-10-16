@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the capybara-seo-lead-source-tracker plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Capybara SEO Lead Source Tracker 0.7.1\n"
+"Project-Id-Version: Capybara SEO Lead Source Tracker 0.8.0\n"
 "Report-Msgid-Bugs-To: https://seo.pe\n"
-"POT-Creation-Date: 2026-08-20T18:19:52+00:00\n"
+"POT-Creation-Date: 2026-10-16T21:05:32+00:00\n"
 "PO-Revision-Date: 2026-08-20T00:00:00+00:00\n"
 "Last-Translator: Henry Silva\n"
 "Language-Team: Spanish (Peru)\n"
@@ -86,7 +86,7 @@ msgstr ""
 msgid "Placeholder reference"
 msgstr "Vista previa de placeholders"
 
-#: admin/settings-page.php:44
+#: admin/settings-page.php:45
 msgid ""
 "Use {exit_page} for the complete URL where the visitor clicks. "
 "{landing_page} is a legacy alias that returns the same click-time URL and "
@@ -96,35 +96,166 @@ msgstr ""
 "{landing_page} es un alias heredado que devuelve la misma URL del momento "
 "del clic y sigue disponible para las plantillas existentes."
 
+#: admin/settings-page.php:46
+msgid ""
+"Use {exit_page_title} for the title of the page where the visitor clicks "
+"(the browser tab title), read at the moment of the click. Use the title, the "
+"URL, or both; if the page has no title, its line is removed from the message."
+msgstr ""
+"Usa {exit_page_title} para el título de la página donde el visitante hace "
+"clic (el título de la pestaña del navegador), leído en el momento del clic. "
+"Usa el título, la URL o ambos; si la página no tiene título, su línea se "
+"elimina del mensaje."
+
+#: admin/settings-page.php:48
+msgid "How the channel is detected"
+msgstr "Cómo se detecta el canal"
+
+#: admin/settings-page.php:49
+msgid ""
+"{channel} always describes the visitor's first captured visit, not the visit "
+"where they click. Rules are checked in this order:"
+msgstr ""
+"{channel} siempre describe la primera visita capturada del visitante, no la "
+"visita en la que hace clic. Las reglas se evalúan en este orden:"
+
+#: admin/settings-page.php:51
+msgid ""
+"Google Ads or Meta Ads: paid UTM parameters (e.g. "
+"utm_source=google&utm_medium=cpc) or a click ID (gclid, gbraid, wbraid, "
+"fbclid)."
+msgstr ""
+"Google Ads o Meta Ads: parámetros UTM de pago (p. ej. "
+"utm_source=google&utm_medium=cpc) o un click ID (gclid, gbraid, wbraid, "
+"fbclid)."
+
+#: admin/settings-page.php:52
+msgid "Organic: utm_medium=organic."
+msgstr "Orgánico: utm_medium=organic."
+
+#: admin/settings-page.php:53
+msgid ""
+"AI platforms (ChatGPT, Claude, Gemini, Copilot, Perplexity): detected from "
+"the referrer domain when there is no click ID and utm_medium is empty or "
+"\"referral\"."
+msgstr ""
+"Plataformas de IA (ChatGPT, Claude, Gemini, Copilot, Perplexity): se "
+"detectan por el dominio del referente cuando no hay click ID y utm_medium "
+"está vacío o es \"referral\"."
+
+#: admin/settings-page.php:54
+msgid "Referral: utm_medium=referral, or a visit from another website."
+msgstr "Referencia: utm_medium=referral, o una visita desde otro sitio web."
+
+#: admin/settings-page.php:55
+msgid ""
+"Organic: a visit from a search engine (Google, Bing, Yahoo, DuckDuckGo, "
+"Baidu, Yandex, Ecosia)."
+msgstr ""
+"Orgánico: una visita desde un buscador (Google, Bing, Yahoo, DuckDuckGo, "
+"Baidu, Yandex, Ecosia)."
+
+#: admin/settings-page.php:57
+msgid ""
+"With no UTMs, click IDs or external referrer, no channel is assigned and the "
+"{channel} line is removed."
+msgstr ""
+"Sin UTMs, click IDs ni referente externo, no se asigna canal y la línea de "
+"{channel} se elimina."
+
+#: admin/settings-page.php:59
+msgid "How long attribution is kept"
+msgstr "Cuánto tiempo se conserva la atribución"
+
+#. translators: %d: number of days the first-touch attribution is kept.
+#: admin/settings-page.php:64
+#, php-format
+msgid ""
+"First-touch attribution is kept in this browser's local storage for %d day "
+"by default, counted from the initial capture. Later visits and campaigns "
+"don't replace the source or restart the period. Once it expires, the plugin "
+"stops using that record and deletes it the next time it runs; a new "
+"identifiable visit can then start a new attribution period."
+msgid_plural ""
+"First-touch attribution is kept in this browser's local storage for %d days "
+"by default, counted from the initial capture. Later visits and campaigns "
+"don't replace the source or restart the period. Once it expires, the plugin "
+"stops using that record and deletes it the next time it runs; a new "
+"identifiable visit can then start a new attribution period."
+msgstr[0] ""
+"La atribución de primera interacción se conserva en el almacenamiento local "
+"de este navegador durante %d día por defecto, contado desde la captura "
+"inicial. Las visitas y campañas posteriores no reemplazan el origen ni "
+"reinician el plazo durante ese periodo. Una vez vencido, el plugin deja de "
+"usar ese registro y lo elimina cuando vuelve a ejecutarse; una nueva entrada "
+"identificable puede iniciar otro periodo de atribución."
+msgstr[1] ""
+"La atribución de primera interacción se conserva en el almacenamiento local "
+"de este navegador durante %d días por defecto, contados desde la captura "
+"inicial. Las visitas y campañas posteriores no reemplazan el origen ni "
+"reinician el plazo durante ese periodo. Una vez vencido, el plugin deja de "
+"usar ese registro y lo elimina cuando vuelve a ejecutarse; una nueva entrada "
+"identificable puede iniciar otro periodo de atribución."
+
+#: admin/settings-page.php:73
+msgid ""
+"Attribution is stored per browser and device; it does not identify the same "
+"visitor across devices. {captured_at} is the date of the initial capture, "
+"not of the current visit."
+msgstr ""
+"La atribución se guarda por navegador y dispositivo; no identifica al mismo "
+"visitante entre dispositivos. {captured_at} es la fecha de la captura "
+"inicial, no de la visita actual."
+
 #: includes/class-capysele-plugin.php:24
 msgid "Settings"
 msgstr "Ajustes"
 
-#: includes/class-capysele-plugin.php:99
+#: includes/class-capysele-plugin.php:100
 msgid "N/A"
 msgstr "N/D"
 
-#: includes/class-capysele-plugin.php:101
+#: includes/class-capysele-plugin.php:102
 msgid "Google Ads"
 msgstr "Google Ads"
 
-#: includes/class-capysele-plugin.php:102
+#: includes/class-capysele-plugin.php:103
 msgid "Meta Ads"
 msgstr "Meta Ads"
 
-#: includes/class-capysele-plugin.php:103
+#: includes/class-capysele-plugin.php:104
 msgid "Organic"
 msgstr "Orgánico"
 
-#: includes/class-capysele-plugin.php:104
+#: includes/class-capysele-plugin.php:105
 msgid "Referral"
 msgstr "Referencia"
 
-#: includes/class-capysele-plugin.php:121
+#: includes/class-capysele-plugin.php:106
+msgid "AI - ChatGPT"
+msgstr "IA - ChatGPT"
+
+#: includes/class-capysele-plugin.php:107
+msgid "AI - Claude"
+msgstr "IA - Claude"
+
+#: includes/class-capysele-plugin.php:108
+msgid "AI - Gemini"
+msgstr "IA - Gemini"
+
+#: includes/class-capysele-plugin.php:109
+msgid "AI - Copilot"
+msgstr "IA - Copilot"
+
+#: includes/class-capysele-plugin.php:110
+msgid "AI - Perplexity"
+msgstr "IA - Perplexity"
+
+#: includes/class-capysele-plugin.php:127
 msgid "Chat on WhatsApp"
 msgstr "Chatea por WhatsApp"
 
-#: includes/class-capysele-plugin.php:142
+#: includes/class-capysele-plugin.php:148
 msgid ""
 "Set up how the WhatsApp button appears below: turn on the floating button "
 "for a zero-setup button, add tracking to a button you already have with CSS "
@@ -136,7 +267,7 @@ msgstr ""
 "con Selector CSS, o inserta el shortcode [capysele_button] donde quieras. "
 "Estas opciones se pueden combinar."
 
-#: includes/class-capysele-settings.php:11
+#: includes/class-capysele-settings.php:24
 msgid ""
 "Hi, I'd like more information.\n"
 "\n"
@@ -158,51 +289,51 @@ msgstr ""
 "[término:{utm_term}]\n"
 "[gclid:{gclid}]"
 
-#: includes/class-capysele-settings.php:49
+#: includes/class-capysele-settings.php:62
 msgid "1. Enable & WhatsApp number"
 msgstr "1. Activación y número de WhatsApp"
 
-#: includes/class-capysele-settings.php:52
+#: includes/class-capysele-settings.php:65
 msgid "Enable plugin"
 msgstr "Activar plugin"
 
-#: includes/class-capysele-settings.php:53
+#: includes/class-capysele-settings.php:66
 msgid "WhatsApp number"
 msgstr "Número de WhatsApp"
 
-#: includes/class-capysele-settings.php:57
+#: includes/class-capysele-settings.php:70
 msgid "2. Where should the WhatsApp button appear?"
 msgstr "2. ¿Dónde debe aparecer el botón de WhatsApp?"
 
-#: includes/class-capysele-settings.php:60
+#: includes/class-capysele-settings.php:73
 msgid "Floating button"
 msgstr "Botón flotante"
 
-#: includes/class-capysele-settings.php:61
+#: includes/class-capysele-settings.php:74
 msgid "CSS Selector"
 msgstr "Selector CSS"
 
-#: includes/class-capysele-settings.php:62
+#: includes/class-capysele-settings.php:75
 msgid "CSS selector value"
 msgstr "Valor del selector CSS"
 
-#: includes/class-capysele-settings.php:66
+#: includes/class-capysele-settings.php:79
 msgid "3. Message & attribution data"
 msgstr "3. Mensaje y datos de atribución"
 
-#: includes/class-capysele-settings.php:69
+#: includes/class-capysele-settings.php:82
 msgid "Message template"
 msgstr "Plantilla de mensaje"
 
-#: includes/class-capysele-settings.php:73
+#: includes/class-capysele-settings.php:86
 msgid "4. Advanced"
 msgstr "4. Avanzado"
 
-#: includes/class-capysele-settings.php:76
+#: includes/class-capysele-settings.php:89
 msgid "Debug mode"
 msgstr "Modo debug"
 
-#: includes/class-capysele-settings.php:103
+#: includes/class-capysele-settings.php:116
 msgid ""
 "Turn the plugin on and set the WhatsApp number that receives messages when "
 "no button-specific number is defined."
@@ -210,7 +341,7 @@ msgstr ""
 "Activa el plugin y configura el número de WhatsApp que recibe los mensajes "
 "cuando el botón no tiene un número propio definido."
 
-#: includes/class-capysele-settings.php:108
+#: includes/class-capysele-settings.php:121
 msgid ""
 "These options are independent — turn on any combination that matches your "
 "situation. All of them share the same WhatsApp number and message template "
@@ -220,11 +351,11 @@ msgstr ""
 "coincida con tu situación. Todas comparten el mismo número de WhatsApp y la "
 "plantilla de mensaje de arriba."
 
-#: includes/class-capysele-settings.php:111
+#: includes/class-capysele-settings.php:124
 msgid "Floating button — turn this on if you don't have a WhatsApp button yet."
 msgstr "Botón flotante — actívalo si todavía no tienes un botón de WhatsApp."
 
-#: includes/class-capysele-settings.php:112
+#: includes/class-capysele-settings.php:125
 msgid ""
 "Automatically adds a ready-made button to every page. Zero setup. If you "
 "also have an existing WhatsApp button elsewhere (theme, page builder, "
@@ -236,7 +367,7 @@ msgstr ""
 "otro lugar (tema, page builder, otro plugin) que no está siendo trackeado "
 "con Selector CSS abajo, activar esto también mostrará dos botones."
 
-#: includes/class-capysele-settings.php:115
+#: includes/class-capysele-settings.php:128
 msgid ""
 "CSS Selector — turn this on if you already have a working WhatsApp button or "
 "link."
@@ -244,7 +375,7 @@ msgstr ""
 "Selector CSS — actívalo si ya tienes un botón o enlace de WhatsApp "
 "funcionando."
 
-#: includes/class-capysele-settings.php:116
+#: includes/class-capysele-settings.php:129
 msgid ""
 "Adds tracking to your existing button (from your theme, a page builder, or "
 "another plugin such as Joinchat) instead of replacing it. Requires the CSS "
@@ -258,11 +389,11 @@ msgstr ""
 "flotante — por ejemplo, mantén tu botón existente trackeado y agrega el "
 "botón flotante en páginas que no tengan uno."
 
-#: includes/class-capysele-settings.php:119
+#: includes/class-capysele-settings.php:132
 msgid "Shortcode — always available, no toggle needed."
 msgstr "Shortcode — siempre disponible, no necesita activarse."
 
-#: includes/class-capysele-settings.php:120
+#: includes/class-capysele-settings.php:133
 msgid ""
 "Insert [capysele_button] in any page, post, or widget to render a plugin-"
 "generated button exactly where you want it. Works independently of the two "
@@ -272,7 +403,7 @@ msgstr ""
 "un botón generado por el plugin exactamente donde quieras. Funciona de forma "
 "independiente a los dos interruptores de arriba."
 
-#: includes/class-capysele-settings.php:127
+#: includes/class-capysele-settings.php:140
 msgid ""
 "This is the message pre-filled in WhatsApp when a visitor clicks the button. "
 "Placeholders are replaced with the captured data; a line is removed "
@@ -284,7 +415,7 @@ msgstr ""
 "línea se elimina automáticamente si su placeholder no tiene datos (por "
 "ejemplo, sin {gclid} en una visita sin click ID de Google Ads)."
 
-#: includes/class-capysele-settings.php:131
+#: includes/class-capysele-settings.php:144
 msgid ""
 "Settings for troubleshooting. Keep debug mode off in production; turn it on "
 "temporarily to confirm the plugin is capturing UTMs correctly."
@@ -293,7 +424,7 @@ msgstr ""
 "actívalo temporalmente para confirmar que el plugin está capturando los UTMs "
 "correctamente."
 
-#: includes/class-capysele-settings.php:167
+#: includes/class-capysele-settings.php:180
 msgid ""
 "Enable frontend functionality. Turn off to fully disable the button and "
 "tracking without deactivating the plugin."
@@ -301,18 +432,21 @@ msgstr ""
 "Habilita la funcionalidad en el frontend. Desactívalo para apagar "
 "completamente el botón y el tracking sin desactivar el plugin."
 
-#: includes/class-capysele-settings.php:168
-msgid "Show captured data in the browser console (for troubleshooting only)."
+#: includes/class-capysele-settings.php:181
+msgid ""
+"Show captured data, its capture and expiry dates, and why the channel was "
+"assigned in the browser console (for troubleshooting only)."
 msgstr ""
-"Muestra los datos capturados en la consola del navegador (solo para "
+"Muestra en la consola del navegador los datos capturados, sus fechas de "
+"captura y vencimiento, y el motivo del canal asignado (solo para "
 "diagnóstico)."
 
-#: includes/class-capysele-settings.php:169
+#: includes/class-capysele-settings.php:182
 msgid "Automatically add the floating WhatsApp button to every page."
 msgstr ""
 "Agrega automáticamente el botón flotante de WhatsApp en todas las páginas."
 
-#: includes/class-capysele-settings.php:170
+#: includes/class-capysele-settings.php:183
 msgid ""
 "Add tracking to existing WhatsApp buttons/links matched by the CSS selector "
 "below."
@@ -320,14 +454,14 @@ msgstr ""
 "Agrega tracking a los botones/enlaces de WhatsApp existentes que coincidan "
 "con el selector CSS de abajo."
 
-#: includes/class-capysele-settings.php:183
+#: includes/class-capysele-settings.php:196
 msgid ""
 "International format, digits only (country code + number, no + no spaces)."
 msgstr ""
 "Formato internacional, solo dígitos (código de país + número, sin + ni "
 "espacios)."
 
-#: includes/class-capysele-settings.php:190
+#: includes/class-capysele-settings.php:203
 msgid ""
 "Only used when \"CSS Selector\" above is enabled — ignored otherwise. "
 "Example: .js-whatsapp-track or a[href*=\"wa.me\"]"
@@ -335,17 +469,17 @@ msgstr ""
 "Solo se usa cuando \"Selector CSS\" está activado arriba — se ignora en los "
 "demás casos. Ejemplo: .js-whatsapp-track o a[href*=\"wa.me\"]"
 
-#: includes/class-capysele-settings.php:197
+#: includes/class-capysele-settings.php:210
 msgid ""
 "Available placeholders: {channel}, {utm_source}, {utm_medium}, "
 "{utm_campaign}, {utm_content}, {utm_term}, {gclid}, {gbraid}, {wbraid}, "
-"{fbclid}, {referrer}, {exit_page}, {landing_page} (legacy alias of "
-"{exit_page}), {captured_at}"
+"{fbclid}, {referrer}, {exit_page}, {exit_page_title}, {landing_page} (legacy "
+"alias of {exit_page}), {captured_at}"
 msgstr ""
 "Placeholders disponibles: {channel}, {utm_source}, {utm_medium}, "
 "{utm_campaign}, {utm_content}, {utm_term}, {gclid}, {gbraid}, {wbraid}, "
-"{fbclid}, {referrer}, {exit_page}, {landing_page} (alias heredado de "
-"{exit_page}), {captured_at}"
+"{fbclid}, {referrer}, {exit_page}, {exit_page_title}, {landing_page} (alias "
+"heredado de {exit_page}), {captured_at}"
 
 #: includes/class-capysele-shortcode.php:11
 msgid "Write to us on WhatsApp"

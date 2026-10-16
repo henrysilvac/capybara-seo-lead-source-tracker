@@ -7,6 +7,11 @@
 
   const STORAGE_KEY = capysele_config.storageKey || 'capysele_data';
   const FALLBACK_LABEL = capysele_config.fallbackLabel || 'N/D';
+  const DEFAULT_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+  const ATTRIBUTION_TTL_MS = (function (value) {
+    var ms = Number(value);
+    return value !== null && isFinite(ms) && ms > 0 ? ms : DEFAULT_TTL_MS;
+  })(capysele_config.attributionTtlMs);
 
   function isExternalReferrer(referrer) {
     if (!referrer) return false;
@@ -34,6 +39,37 @@
     }
   }
 
+  // Plataformas de IA: coincidencia exacta o subdominio (".dominio"), nunca por substring.
+  var AI_PLATFORMS = [
+    { domains: ['chatgpt.com', 'chat.openai.com'], key: 'ai_chatgpt', label: 'AI - ChatGPT' },
+    { domains: ['claude.ai'], key: 'ai_claude', label: 'AI - Claude' },
+    { domains: ['gemini.google.com'], key: 'ai_gemini', label: 'AI - Gemini' },
+    { domains: ['copilot.microsoft.com'], key: 'ai_copilot', label: 'AI - Copilot' },
+    { domains: ['perplexity.ai'], key: 'ai_perplexity', label: 'AI - Perplexity' }
+  ];
+
+  function detectAIPlatform(referrer) {
+    if (!referrer) return null;
+    var url;
+    try {
+      url = new URL(referrer);
+    } catch (e) {
+      return null;
+    }
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') return null;
+    var hostname = url.hostname.toLowerCase();
+    for (var i = 0; i < AI_PLATFORMS.length; i++) {
+      var platform = AI_PLATFORMS[i];
+      for (var j = 0; j < platform.domains.length; j++) {
+        var domain = platform.domains[j];
+        if (hostname === domain || hostname.slice(-(domain.length + 1)) === '.' + domain) {
+          return platform;
+        }
+      }
+    }
+    return null;
+  }
+
   function getParams() {
     const p = new URLSearchParams(window.location.search);
     return {
@@ -48,16 +84,8 @@
       fbclid: p.get('fbclid') || '',
       referrer: isExternalReferrer(document.referrer) ? document.referrer : '',
       landing_page: window.location.href,
-      captured_at: new Date().toISOString()
+      captured_at: new Date(Date.now()).toISOString()
     };
-  }
-
-  function getStored() {
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-    } catch (e) {
-      return {};
-    }
   }
 
   function hasAttributionData(data) {
@@ -75,60 +103,147 @@
     ].some(Boolean);
   }
 
-  function saveData(current) {
-    const stored = getStored();
+  // First-touch: la primera captura válida se conserva completa durante
+  // ATTRIBUTION_TTL_MS desde su captured_at, sin renovarse por visitas.
+  function getExpiresAt(data) {
+    var capturedAt = Date.parse(data && data.captured_at);
+    return isFinite(capturedAt) ? capturedAt + ATTRIBUTION_TTL_MS : NaN;
+  }
 
-    if (!hasAttributionData(current)) {
+  function isValidRecord(data) {
+    if (!data || typeof data !== 'object' || !hasAttributionData(data)) return false;
+    var capturedAt = Date.parse(data.captured_at);
+    var now = Date.now();
+    // Fecha ausente, inválida o futura: no hay vigencia determinable.
+    return isFinite(capturedAt) && capturedAt <= now && now < capturedAt + ATTRIBUTION_TTL_MS;
+  }
+
+  var storageAvailable = true;
+
+  // Devuelve la captura vigente o null. Limpia solo la clave del plugin si
+  // el registro venció o no es válido.
+  function getValidStored() {
+    var raw;
+    try {
+      raw = localStorage.getItem(STORAGE_KEY);
+    } catch (e) {
+      storageAvailable = false;
+      return null;
+    }
+    if (raw === null) return null;
+
+    var stored = null;
+    try {
+      stored = JSON.parse(raw);
+    } catch (e) {
+      stored = null;
+    }
+    if (isValidRecord(stored)) return stored;
+
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (e) {
+      storageAvailable = false;
+    }
+    return null;
+  }
+
+  function saveData(current) {
+    const stored = getValidStored();
+    if (stored) {
       return stored;
     }
 
-    const merged = Object.assign({}, stored, current);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-    return merged;
+    if (!hasAttributionData(current)) {
+      return {};
+    }
+
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+    } catch (e) {
+      storageAvailable = false;
+    }
+    return current;
   }
 
-  function detectChannel(data) {
+  // Atribución efectiva al clic: vuelve a validar la vigencia para que una
+  // pestaña abierta más allá del plazo no use una copia vencida, sin
+  // recapturar como nueva entrada los parámetros de su carga original.
+  function getClickData(pageData) {
+    if (storageAvailable) {
+      var stored = getValidStored();
+      if (storageAvailable) return stored || {};
+    }
+    // Sin almacenamiento: solo la captura en memoria de esta página, si sigue vigente.
+    return isValidRecord(pageData) ? pageData : {};
+  }
+
+  function classifyChannel(data) {
     const ch = (capysele_config.channels || {});
     const source = (data.utm_source || '').toLowerCase();
     const medium = (data.utm_medium || '').toLowerCase();
 
     if (source === 'google' && ['cpc', 'ppc', 'paid'].includes(medium)) {
-      return ch.google_ads || 'Google Ads';
+      return { channel: ch.google_ads || 'Google Ads', reason: 'utm_paid_google' };
     }
 
     if ((source === 'facebook' || source === 'instagram') && ['cpc', 'ppc', 'paid', 'paid_social'].includes(medium)) {
-      return ch.meta_ads || 'Meta Ads';
+      return { channel: ch.meta_ads || 'Meta Ads', reason: 'utm_paid_meta' };
     }
 
     if (data.gclid || data.gbraid || data.wbraid) {
-      return ch.google_ads || 'Google Ads';
+      return { channel: ch.google_ads || 'Google Ads', reason: 'google_click_id' };
     }
 
     if (data.fbclid) {
-      return ch.meta_ads || 'Meta Ads';
-    }
-
-    if (source === 'google' && medium === 'organic') {
-      return ch.organic || 'Organic';
+      return { channel: ch.meta_ads || 'Meta Ads', reason: 'meta_click_id' };
     }
 
     if (medium === 'organic') {
-      return ch.organic || 'Organic';
+      return { channel: ch.organic || 'Organic', reason: 'utm_medium_organic' };
+    }
+
+    // Sin click IDs (descartados arriba) y con medio vacío o referral.
+    if (!medium || medium === 'referral') {
+      var platform = detectAIPlatform(data.referrer);
+      if (platform) {
+        return { channel: ch[platform.key] || platform.label, reason: 'ai_referrer' };
+      }
     }
 
     if (medium === 'referral') {
-      return ch.referral || 'Referral';
+      return { channel: ch.referral || 'Referral', reason: 'utm_medium_referral' };
     }
 
     if (isSearchEngineReferrer(data.referrer)) {
-      return ch.organic || 'Organic';
+      return { channel: ch.organic || 'Organic', reason: 'search_engine_referrer' };
     }
 
     if (isExternalReferrer(data.referrer)) {
-      return ch.referral || 'Referral';
+      return { channel: ch.referral || 'Referral', reason: 'external_referrer' };
     }
 
-    return '';
+    return { channel: '', reason: 'none' };
+  }
+
+  function detectChannel(data) {
+    return classifyChannel(data).channel;
+  }
+
+  function getPageTitle() {
+    return String(document.title || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function debugInfo(data) {
+    var classification = classifyChannel(data);
+    var expiresAt = getExpiresAt(data);
+    return {
+      channel: classification.channel,
+      channel_reason: classification.reason,
+      captured_at: data.captured_at || '',
+      expires_at: isFinite(expiresAt) ? new Date(expiresAt).toISOString() : '',
+      data: data
+    };
   }
 
   function normalizeData(data) {
@@ -147,8 +262,9 @@
       fbclid: data.fbclid || FALLBACK_LABEL,
       referrer: data.referrer || FALLBACK_LABEL,
       exit_page: clickPage,
+      exit_page_title: getPageTitle(),
       landing_page: clickPage,
-      captured_at: data.captured_at || new Date().toISOString()
+      captured_at: data.captured_at || new Date(Date.now()).toISOString()
     };
   }
 
@@ -169,6 +285,7 @@
       '{fbclid}': data.fbclid,
       '{referrer}': data.referrer,
       '{exit_page}': data.exit_page,
+      '{exit_page_title}': data.exit_page_title,
       '{landing_page}': data.landing_page,
       '{captured_at}': data.captured_at
     };
@@ -187,6 +304,7 @@
       '{fbclid}': !!raw.fbclid,
       '{referrer}': !!raw.referrer,
       '{exit_page}': true,
+      '{exit_page_title}': !!data.exit_page_title,
       '{landing_page}': true,
       '{captured_at}': true
     };
@@ -219,12 +337,14 @@
     }
     message = filtered.join('\n');
 
-    // Reemplazar placeholders restantes
-    Object.keys(replacements).forEach(function (placeholder) {
-      message = message.split(placeholder).join(replacements[placeholder]);
+    // Reemplazar placeholders en una sola pasada: los valores (título, URLs,
+    // referente) se insertan como texto literal y no se reinterpretan como
+    // placeholders aunque contengan llaves.
+    return message.replace(/\{[a-z_]+\}/g, function (placeholder) {
+      return Object.prototype.hasOwnProperty.call(replacements, placeholder)
+        ? replacements[placeholder]
+        : placeholder;
     });
-
-    return message;
   }
 
   function resolvePhone(button) {
@@ -236,7 +356,7 @@
     return String(capysele_config.phone || '').replace(/\D+/g, '');
   }
 
-  function applyJoinchat(button, data) {
+  function applyJoinchat(button, pageData) {
     var raw = button.getAttribute('data-settings');
     if (!raw) return false;
     var settings;
@@ -259,12 +379,13 @@
       e.stopImmediatePropagation();
       e.preventDefault();
 
+      var data = getClickData(pageData);
       var message = buildMessage(capysele_config.template, data);
       var url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(message);
       window.open(url, '_blank', 'noopener,noreferrer');
 
       if (capysele_config.debug) {
-        console.log('Capybara SEO Lead Source Tracker: Joinchat interceptado.', { phone: phone, message: message });
+        console.log('Capybara SEO Lead Source Tracker: Joinchat interceptado.', { phone: phone, message: message, attribution: debugInfo(data) });
       }
     }, true); // capture = true → se ejecuta antes que los handlers de Joinchat
 
@@ -274,7 +395,7 @@
     return true;
   }
 
-  function applyToButtons(data) {
+  function applyToButtons(pageData) {
     // El botón de shortcode siempre está activo; flotante y selector CSS son
     // interruptores independientes y pueden combinarse entre sí.
     var selectorGroups = ['.capysele-button'];
@@ -311,7 +432,7 @@
 
     buttons.forEach(function (button) {
       // Joinchat: elemento con data-settings que contiene message_send
-      if (applyJoinchat(button, data)) return;
+      if (applyJoinchat(button, pageData)) return;
 
       // Elemento <a> estándar
       if (button.tagName.toLowerCase() !== 'a') {
@@ -324,7 +445,9 @@
       const phone = resolvePhone(button);
       if (!phone) return;
 
-      const updateLink = function () {
+      // Al cargar se usa la captura de la página; al clic se vuelve a validar su vigencia.
+      const updateLink = function (event) {
+        const data = event ? getClickData(pageData) : pageData;
         const message = buildMessage(capysele_config.template, data);
         const url = 'https://wa.me/' + encodeURIComponent(phone) + '?text=' + encodeURIComponent(message);
         button.setAttribute('href', url);
@@ -343,7 +466,7 @@
     applyToButtons(data);
 
     if (capysele_config.debug) {
-      console.log('Capybara SEO Lead Source Tracker data:', data);
+      console.log('Capybara SEO Lead Source Tracker data:', debugInfo(data));
     }
   }
 

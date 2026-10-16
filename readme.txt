@@ -5,7 +5,7 @@ Tags: whatsapp, utm, tracking, leads, attribution
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.7.1
+Stable tag: 0.8.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Author URI: https://seo.pe
@@ -14,25 +14,25 @@ Captures UTMs and click IDs and adds them to your WhatsApp messages via a floati
 
 == Description ==
 
-Capybara SEO Lead Source Tracker captures UTM parameters and click IDs (gclid, gbraid, wbraid, fbclid) from the URL, stores them in localStorage (first-touch attribution), and automatically updates WhatsApp links with a dynamic message that includes the lead source data.
+Capybara SEO Lead Source Tracker captures UTM parameters and click IDs (gclid, gbraid, wbraid, fbclid) from the URL, stores them in localStorage (first-touch attribution, kept for 7 days by default from the initial capture), and automatically updates WhatsApp links with a dynamic message that includes the lead source data.
 
 **Key features:**
 
 * Captures utm_source, utm_medium, utm_campaign, utm_content, utm_term, gclid, gbraid, wbraid, fbclid
-* First-touch attribution: data is preserved across pages even if subsequent visits have no UTMs
-* Automatic channel detection: Google Ads, Meta Ads, Organic, Referral
+* First-touch attribution: the first identifiable visit is preserved across pages and later visits for 7 days by default, counted from the initial capture — later visits and campaigns don't replace it or restart the period
+* Automatic channel detection: Google Ads, Meta Ads, Organic, Referral, and AI platforms (ChatGPT, Claude, Gemini, Copilot, Perplexity)
 * Lines with no captured data are omitted from the WhatsApp message
 * Combinable button placements: Floating button (auto-injected, zero setup) and CSS Selector (reuse existing buttons) can both be turned on at once, plus the always-available [capysele_button] shortcode — all sharing the same number and tracking
 * Customizable message template with placeholders
-* Click-time page tracking: {exit_page} reports the complete URL where the visitor clicks, including its query string and fragment
+* Click-time page tracking: {exit_page} reports the complete URL where the visitor clicks, including its query string and fragment, and {exit_page_title} reports that page's title
 * Translation-ready: approved locales are delivered separately through WordPress.org language packs based on the WordPress site or user locale
-* Debug mode: logs captured data to the browser console
+* Debug mode: logs captured data, its capture and expiry dates, and why the channel was assigned to the browser console
 
 **Available placeholders for the message template:**
 
-{channel}, {utm_source}, {utm_medium}, {utm_campaign}, {utm_content}, {utm_term}, {gclid}, {gbraid}, {wbraid}, {fbclid}, {referrer}, {exit_page}, {landing_page}, {captured_at}
+{channel}, {utm_source}, {utm_medium}, {utm_campaign}, {utm_content}, {utm_term}, {gclid}, {gbraid}, {wbraid}, {fbclid}, {referrer}, {exit_page}, {exit_page_title}, {landing_page}, {captured_at}
 
-Use {exit_page} for new templates. The legacy {landing_page} placeholder remains supported and now returns the same click-time URL for backward compatibility.
+Use {exit_page} for new templates. The legacy {landing_page} placeholder remains supported and now returns the same click-time URL for backward compatibility. Use {exit_page_title} for the title of the page where the visitor clicks (read at click time); you can use the title, the URL, or both. Existing templates are not changed automatically.
 
 == Installation ==
 
@@ -58,7 +58,17 @@ Yes. Enable "CSS Selector" and set the selector to match your existing buttons (
 
 = What is first-touch attribution? =
 
-The first UTM parameters captured during a user's session are stored and kept even if the user navigates to other pages without UTMs. This way, the original traffic source is always preserved in the WhatsApp message.
+The first identifiable visit (UTM parameters, click IDs, or an external referrer) is stored in the visitor's browser and kept as a complete set while they navigate to other pages or come back later. Later visits and campaigns do not replace it. This way, the original traffic source is preserved in the WhatsApp message.
+
+= How long is attribution kept? =
+
+First-touch attribution is kept in this browser's local storage for 7 days by default, counted from the initial capture. Later visits and campaigns don't replace the source or restart the period. Once it expires, the plugin stops using that record and deletes it the next time it runs; a new identifiable visit can then start a new attribution period.
+
+Attribution is stored per browser and device; it does not identify the same visitor across devices. {captured_at} shows the date of the initial capture, not of the current visit. Visits with no UTMs, click IDs or external referrer are not labeled as Organic — no channel is assigned.
+
+= How are AI platforms detected? =
+
+When the first captured visit comes from chatgpt.com, chat.openai.com, claude.ai, gemini.google.com, copilot.microsoft.com, or perplexity.ai (including their subdomains), the channel is reported as "AI - ChatGPT", "AI - Claude", and so on. Paid UTMs, click IDs, and utm_medium=organic take priority; AI is assigned only when there is no click ID and utm_medium is empty or "referral". Lookalike domains (e.g. chatgpt.com.example.org) are not matched.
 
 = What happens if a field has no data? =
 
@@ -66,10 +76,22 @@ Lines in the message template whose placeholder has no captured value are automa
 
 == Upgrade Notice ==
 
+= 0.8.0 =
+First-touch attribution now expires 7 days after the initial capture and is no longer replaced by later visits. Adds AI platform channels and the {exit_page_title} placeholder. Saved templates are not changed.
+
 = 0.7.1 =
 Adds {exit_page} for the complete click-time URL. Existing {landing_page} templates remain compatible and now receive that same URL; saved attribution data and settings require no migration.
 
 == Changelog ==
+
+= 0.8.0 =
+* Added AI platform channels detected from the referrer domain: ChatGPT (chatgpt.com, chat.openai.com), Claude, Gemini, Copilot, and Perplexity. Paid UTMs, click IDs, and utm_medium=organic keep priority; lookalike domains are not matched.
+* Added {exit_page_title}, the title of the page where the visitor clicks, read at click time on the shortcode, floating button, CSS-selector links, and Joinchat.
+* Fixed first-touch attribution: the first identifiable visit is now kept as a complete set instead of being replaced by later UTMs, click IDs, or referrers.
+* First-touch attribution now expires 7 days after the initial capture (not renewed by later visits). Expired, undated, or future-dated records are ignored and removed from localStorage; other storage keys are untouched. Clicks in a tab left open past the limit no longer use the expired record.
+* Placeholder values (titles, URLs, referrers) are now inserted literally and never re-interpreted as placeholders.
+* Debug mode now logs the capture date, expiry date, and the reason for the assigned channel.
+* The plugin keeps working for the current page when localStorage is unavailable.
 
 = 0.7.1 =
 * Added {exit_page}, the recommended placeholder for the complete URL at the moment a visitor clicks, including query strings and fragments.
