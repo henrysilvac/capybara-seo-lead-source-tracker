@@ -31,3 +31,18 @@
   display: block;
   margin-bottom: 2px;
 }
+
+.capysele-model-options,
+#capysele-attribution-model-help {
+  max-width: 720px;
+}
+
+.capysele-model-option {
+  display: block;
+  margin-bottom: 12px;
+}
+
+.capysele-model-option .description {
+  display: block;
+  margin: 2px 0 0 24px;
+}

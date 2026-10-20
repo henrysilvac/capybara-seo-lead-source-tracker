@@ -97,6 +97,7 @@ class CAPYSELE_Plugin {
             'storageKey' => 'capysele_data',
             'siteUrl' => home_url('/'),
             'attributionTtlMs' => CAPYSELE_Settings::get_attribution_ttl_ms(),
+            'attributionModel' => CAPYSELE_Settings::normalize_attribution_model($settings['attribution_model']),
             'fallbackLabel' => __('N/A', 'capybara-seo-lead-source-tracker'),
             'channels' => [
                 'google_ads' => __('Google Ads', 'capybara-seo-lead-source-tracker'),

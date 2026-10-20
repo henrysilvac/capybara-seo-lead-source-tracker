@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Capybara SEO Lead Source Tracker 0.8.0\n"
+"Project-Id-Version: Capybara SEO Lead Source Tracker 0.9.0\n"
 "Report-Msgid-Bugs-To: https://seo.pe\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-16T21:05:32+00:00\n"
+"POT-Creation-Date: 2026-10-20T00:00:00+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: capybara-seo-lead-source-tracker\n"
@@ -26,7 +26,11 @@ msgstr ""
 
 #. Description of the plugin
 #: capybara-seo-lead-source-tracker.php
-msgid "Captures UTMs and click IDs, keeps them across page visits, and adds them to your WhatsApp messages via an auto-injected floating button, your existing buttons, and/or a shortcode — combinable. <a href=\"options-general.php?page=capysele-lead-source-tracker\">Configure the plugin</a>."
+msgid ""
+"Captures UTMs and click IDs, keeps them across page visits, and adds them to "
+"your WhatsApp messages via an auto-injected floating button, your existing "
+"buttons, and/or a shortcode — combinable. <a href=\"options-general.php?"
+"page=capysele-lead-source-tracker\">Configure the plugin</a>."
 msgstr ""
 
 #. Author of the plugin
@@ -35,7 +39,11 @@ msgid "Henry Silva"
 msgstr ""
 
 #: admin/settings-page.php:8
-msgid "Captures UTM parameters and click IDs, keeps them across page visits (first-touch attribution), and automatically includes them in the WhatsApp message of your floating button, your existing buttons, and/or the [capysele_button] shortcode."
+msgid ""
+"Captures UTM parameters and click IDs, keeps them across page visits with "
+"the attribution model you choose (last click by default, or first click), "
+"and automatically includes them in the WhatsApp message of your floating "
+"button, your existing buttons, and/or the [capysele_button] shortcode."
 msgstr ""
 
 #: admin/settings-page.php:14
@@ -51,126 +59,185 @@ msgid "Set your WhatsApp number and save (section 1)."
 msgstr ""
 
 #: admin/settings-page.php:23
-msgid "Turn on the button placement(s) that match your situation, following the guide in section 2."
+msgid ""
+"Turn on the button placement(s) that match your situation, following the "
+"guide in section 2."
 msgstr ""
 
 #: admin/settings-page.php:24
-msgid "Test with a URL that includes UTM parameters, for example ?utm_source=google&utm_medium=cpc&utm_campaign=test"
+msgid ""
+"Choose the attribution model in section 3: last click credits the most "
+"recent identifiable source before the WhatsApp click; first click keeps the "
+"first one captured. Save, then reload the site page before testing."
 msgstr ""
 
-#: admin/settings-page.php:27
+#: admin/settings-page.php:25
+msgid ""
+"Test with a URL that includes UTM parameters, for example ?"
+"utm_source=google&utm_medium=cpc&utm_campaign=test"
+msgstr ""
+
+#: admin/settings-page.php:28
 msgid "Placeholder reference"
 msgstr ""
 
-#: admin/settings-page.php:45
-msgid "Use {exit_page} for the complete URL where the visitor clicks. {landing_page} is a legacy alias that returns the same click-time URL and remains available for existing templates."
+#: admin/settings-page.php:46
+msgid ""
+"Use {exit_page} for the complete URL where the visitor clicks. "
+"{landing_page} is a legacy alias that returns the same click-time URL and "
+"remains available for existing templates."
 msgstr ""
 
-#: admin/settings-page.php:46
-msgid "Use {exit_page_title} for the title of the page where the visitor clicks (the browser tab title), read at the moment of the click. Use the title, the URL, or both; if the page has no title, its line is removed from the message."
+#: admin/settings-page.php:47
+msgid ""
+"{captured_at} is the date of the selected capture: the initial one with "
+"first click, the most recent one with last click. If there is no valid "
+"capture, it shows the time of the WhatsApp click instead, which is not "
+"evidence of a real capture."
 msgstr ""
 
 #: admin/settings-page.php:48
+msgid ""
+"Use {exit_page_title} for the title of the page where the visitor clicks "
+"(the browser tab title), read at the moment of the click. Use the title, the "
+"URL, or both; if the page has no title, its line is removed from the message."
+msgstr ""
+
+#: admin/settings-page.php:50
 msgid "How the channel is detected"
 msgstr ""
 
-#: admin/settings-page.php:49
-msgid "{channel} always describes the visitor's first captured visit, not the visit where they click. Rules are checked in this order:"
-msgstr ""
-
 #: admin/settings-page.php:51
-msgid "Google Ads or Meta Ads: paid UTM parameters (e.g. utm_source=google&utm_medium=cpc) or a click ID (gclid, gbraid, wbraid, fbclid)."
-msgstr ""
-
-#: admin/settings-page.php:52
-msgid "Organic: utm_medium=organic."
+msgid ""
+"{channel} describes the source selected by the configured attribution model "
+"(the latest or the first identifiable entry), not necessarily the visit "
+"where they click. Rules are checked in this order:"
 msgstr ""
 
 #: admin/settings-page.php:53
-msgid "AI platforms (ChatGPT, Claude, Gemini, Copilot, Perplexity): detected from the referrer domain when there is no click ID and utm_medium is empty or \"referral\"."
+msgid ""
+"Google Ads or Meta Ads: paid UTM parameters (e.g. "
+"utm_source=google&utm_medium=cpc) or a click ID (gclid, gbraid, wbraid, "
+"fbclid)."
 msgstr ""
 
 #: admin/settings-page.php:54
-msgid "Referral: utm_medium=referral, or a visit from another website."
+msgid "Organic: utm_medium=organic."
 msgstr ""
 
 #: admin/settings-page.php:55
-msgid "Organic: a visit from a search engine (Google, Bing, Yahoo, DuckDuckGo, Baidu, Yandex, Ecosia)."
+msgid ""
+"AI platforms (ChatGPT, Claude, Gemini, Copilot, Perplexity): detected from "
+"the referrer domain when there is no click ID and utm_medium is empty or "
+"\"referral\"."
+msgstr ""
+
+#: admin/settings-page.php:56
+msgid "Referral: utm_medium=referral, or a visit from another website."
 msgstr ""
 
 #: admin/settings-page.php:57
-msgid "With no UTMs, click IDs or external referrer, no channel is assigned and the {channel} line is removed."
+msgid ""
+"Organic: a visit from a search engine (Google, Bing, Yahoo, DuckDuckGo, "
+"Baidu, Yandex, Ecosia)."
 msgstr ""
 
 #: admin/settings-page.php:59
+msgid ""
+"With no UTMs, click IDs or external referrer, no channel is assigned and the "
+"{channel} line is removed."
+msgstr ""
+
+#: admin/settings-page.php:61
 msgid "How long attribution is kept"
 msgstr ""
 
-#. translators: %d: number of days the first-touch attribution is kept.
-#: admin/settings-page.php:64
+#: admin/settings-page.php:67
 #, php-format
-msgid "First-touch attribution is kept in this browser's local storage for %d day by default, counted from the initial capture. Later visits and campaigns don't replace the source or restart the period. Once it expires, the plugin stops using that record and deletes it the next time it runs; a new identifiable visit can then start a new attribution period."
-msgid_plural "First-touch attribution is kept in this browser's local storage for %d days by default, counted from the initial capture. Later visits and campaigns don't replace the source or restart the period. Once it expires, the plugin stops using that record and deletes it the next time it runs; a new identifiable visit can then start a new attribution period."
+msgid ""
+"Attribution is kept in this browser's local storage for %d day, counted from "
+"the selected capture. With last click, each new identifiable entry (UTMs, "
+"click IDs or an external referrer) replaces the whole record and restarts "
+"the period. With first click, later entries don't replace the source or "
+"restart the period. In both models, visits without source signals and "
+"WhatsApp clicks never renew it. Once it expires, the plugin stops using that "
+"record and deletes it the next time it runs; a new identifiable visit can "
+"then start a new attribution period."
+msgid_plural ""
+"Attribution is kept in this browser's local storage for %d days, counted "
+"from the selected capture. With last click, each new identifiable entry "
+"(UTMs, click IDs or an external referrer) replaces the whole record and "
+"restarts the period. With first click, later entries don't replace the "
+"source or restart the period. In both models, visits without source signals "
+"and WhatsApp clicks never renew it. Once it expires, the plugin stops using "
+"that record and deletes it the next time it runs; a new identifiable visit "
+"can then start a new attribution period."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/settings-page.php:73
-msgid "Attribution is stored per browser and device; it does not identify the same visitor across devices. {captured_at} is the date of the initial capture, not of the current visit."
+#: admin/settings-page.php:75
+msgid ""
+"Attribution is stored per browser and device; it does not identify the same "
+"visitor across devices."
 msgstr ""
 
 #: includes/class-capysele-plugin.php:24
 msgid "Settings"
 msgstr ""
 
-#: includes/class-capysele-plugin.php:100
+#: includes/class-capysele-plugin.php:101
 msgid "N/A"
 msgstr ""
 
-#: includes/class-capysele-plugin.php:102
+#: includes/class-capysele-plugin.php:103
 msgid "Google Ads"
 msgstr ""
 
-#: includes/class-capysele-plugin.php:103
+#: includes/class-capysele-plugin.php:104
 msgid "Meta Ads"
 msgstr ""
 
-#: includes/class-capysele-plugin.php:104
+#: includes/class-capysele-plugin.php:105
 msgid "Organic"
 msgstr ""
 
-#: includes/class-capysele-plugin.php:105
+#: includes/class-capysele-plugin.php:106
 msgid "Referral"
 msgstr ""
 
-#: includes/class-capysele-plugin.php:106
+#: includes/class-capysele-plugin.php:107
 msgid "AI - ChatGPT"
 msgstr ""
 
-#: includes/class-capysele-plugin.php:107
+#: includes/class-capysele-plugin.php:108
 msgid "AI - Claude"
 msgstr ""
 
-#: includes/class-capysele-plugin.php:108
+#: includes/class-capysele-plugin.php:109
 msgid "AI - Gemini"
 msgstr ""
 
-#: includes/class-capysele-plugin.php:109
+#: includes/class-capysele-plugin.php:110
 msgid "AI - Copilot"
 msgstr ""
 
-#: includes/class-capysele-plugin.php:110
+#: includes/class-capysele-plugin.php:111
 msgid "AI - Perplexity"
 msgstr ""
 
-#: includes/class-capysele-plugin.php:127
+#: includes/class-capysele-plugin.php:128
 msgid "Chat on WhatsApp"
 msgstr ""
 
-#: includes/class-capysele-plugin.php:148
-msgid "Set up how the WhatsApp button appears below: turn on the floating button for a zero-setup button, add tracking to a button you already have with CSS Selector, or insert the [capysele_button] shortcode anywhere. These can be combined."
+#: includes/class-capysele-plugin.php:149
+msgid ""
+"Set up how the WhatsApp button appears below: turn on the floating button "
+"for a zero-setup button, add tracking to a button you already have with CSS "
+"Selector, or insert the [capysele_button] shortcode anywhere. These can be "
+"combined."
 msgstr ""
 
-#: includes/class-capysele-settings.php:24
+#: includes/class-capysele-settings.php:37
 msgid ""
 "Hi, I'd like more information.\n"
 "\n"
@@ -183,116 +250,197 @@ msgid ""
 "[gclid:{gclid}]"
 msgstr ""
 
-#: includes/class-capysele-settings.php:62
+#: includes/class-capysele-settings.php:78
 msgid "1. Enable & WhatsApp number"
 msgstr ""
 
-#: includes/class-capysele-settings.php:65
+#: includes/class-capysele-settings.php:81
 msgid "Enable plugin"
 msgstr ""
 
-#: includes/class-capysele-settings.php:66
+#: includes/class-capysele-settings.php:82
 msgid "WhatsApp number"
 msgstr ""
 
-#: includes/class-capysele-settings.php:70
+#: includes/class-capysele-settings.php:86
 msgid "2. Where should the WhatsApp button appear?"
 msgstr ""
 
-#: includes/class-capysele-settings.php:73
+#: includes/class-capysele-settings.php:89
 msgid "Floating button"
 msgstr ""
 
-#: includes/class-capysele-settings.php:74
+#: includes/class-capysele-settings.php:90
 msgid "CSS Selector"
 msgstr ""
 
-#: includes/class-capysele-settings.php:75
+#: includes/class-capysele-settings.php:91
 msgid "CSS selector value"
 msgstr ""
 
-#: includes/class-capysele-settings.php:79
+#: includes/class-capysele-settings.php:95
 msgid "3. Message & attribution data"
 msgstr ""
 
-#: includes/class-capysele-settings.php:82
+#: includes/class-capysele-settings.php:98
+#: includes/class-capysele-settings.php:239
+msgid "Attribution model"
+msgstr ""
+
+#: includes/class-capysele-settings.php:99
 msgid "Message template"
 msgstr ""
 
-#: includes/class-capysele-settings.php:86
+#: includes/class-capysele-settings.php:103
 msgid "4. Advanced"
 msgstr ""
 
-#: includes/class-capysele-settings.php:89
+#: includes/class-capysele-settings.php:106
 msgid "Debug mode"
 msgstr ""
 
-#: includes/class-capysele-settings.php:116
-msgid "Turn the plugin on and set the WhatsApp number that receives messages when no button-specific number is defined."
+#: includes/class-capysele-settings.php:133
+msgid ""
+"Turn the plugin on and set the WhatsApp number that receives messages when "
+"no button-specific number is defined."
 msgstr ""
 
-#: includes/class-capysele-settings.php:121
-msgid "These options are independent — turn on any combination that matches your situation. All of them share the same WhatsApp number and message template above."
+#: includes/class-capysele-settings.php:138
+msgid ""
+"These options are independent — turn on any combination that matches your "
+"situation. All of them share the same WhatsApp number and message template "
+"above."
 msgstr ""
 
-#: includes/class-capysele-settings.php:124
+#: includes/class-capysele-settings.php:141
 msgid "Floating button — turn this on if you don't have a WhatsApp button yet."
 msgstr ""
 
-#: includes/class-capysele-settings.php:125
-msgid "Automatically adds a ready-made button to every page. Zero setup. If you also have an existing WhatsApp button elsewhere (theme, page builder, another plugin) that isn't tracked via CSS Selector below, turning this on too will show two buttons."
+#: includes/class-capysele-settings.php:142
+msgid ""
+"Automatically adds a ready-made button to every page. Zero setup. If you "
+"also have an existing WhatsApp button elsewhere (theme, page builder, "
+"another plugin) that isn't tracked via CSS Selector below, turning this on "
+"too will show two buttons."
 msgstr ""
 
-#: includes/class-capysele-settings.php:128
-msgid "CSS Selector — turn this on if you already have a working WhatsApp button or link."
+#: includes/class-capysele-settings.php:145
+msgid ""
+"CSS Selector — turn this on if you already have a working WhatsApp button or "
+"link."
 msgstr ""
 
-#: includes/class-capysele-settings.php:129
-msgid "Adds tracking to your existing button (from your theme, a page builder, or another plugin such as Joinchat) instead of replacing it. Requires the CSS selector that matches your button below. Can be combined with the floating button — for example, keep your existing button tracked and add the floating button on pages that don't have one."
+#: includes/class-capysele-settings.php:146
+msgid ""
+"Adds tracking to your existing button (from your theme, a page builder, or "
+"another plugin such as Joinchat) instead of replacing it. Requires the CSS "
+"selector that matches your button below. Can be combined with the floating "
+"button — for example, keep your existing button tracked and add the floating "
+"button on pages that don't have one."
 msgstr ""
 
-#: includes/class-capysele-settings.php:132
+#: includes/class-capysele-settings.php:149
 msgid "Shortcode — always available, no toggle needed."
 msgstr ""
 
-#: includes/class-capysele-settings.php:133
-msgid "Insert [capysele_button] in any page, post, or widget to render a plugin-generated button exactly where you want it. Works independently of the two toggles above."
+#: includes/class-capysele-settings.php:150
+msgid ""
+"Insert [capysele_button] in any page, post, or widget to render a plugin-"
+"generated button exactly where you want it. Works independently of the two "
+"toggles above."
 msgstr ""
 
-#: includes/class-capysele-settings.php:140
-msgid "This is the message pre-filled in WhatsApp when a visitor clicks the button. Placeholders are replaced with the captured data; a line is removed automatically if its placeholder has no data (e.g. no {gclid} on a visit with no Google Ads click ID)."
+#: includes/class-capysele-settings.php:157
+msgid ""
+"This is the message pre-filled in WhatsApp when a visitor clicks the button. "
+"Placeholders are replaced with the captured data; a line is removed "
+"automatically if its placeholder has no data (e.g. no {gclid} on a visit "
+"with no Google Ads click ID)."
 msgstr ""
 
-#: includes/class-capysele-settings.php:144
-msgid "Settings for troubleshooting. Keep debug mode off in production; turn it on temporarily to confirm the plugin is capturing UTMs correctly."
+#: includes/class-capysele-settings.php:161
+msgid ""
+"Settings for troubleshooting. Keep debug mode off in production; turn it on "
+"temporarily to confirm the plugin is capturing UTMs correctly."
 msgstr ""
 
-#: includes/class-capysele-settings.php:180
-msgid "Enable frontend functionality. Turn off to fully disable the button and tracking without deactivating the plugin."
+#: includes/class-capysele-settings.php:199
+msgid ""
+"Enable frontend functionality. Turn off to fully disable the button and "
+"tracking without deactivating the plugin."
 msgstr ""
 
-#: includes/class-capysele-settings.php:181
-msgid "Show captured data, its capture and expiry dates, and why the channel was assigned in the browser console (for troubleshooting only)."
+#: includes/class-capysele-settings.php:200
+msgid ""
+"Show captured data, its capture and expiry dates, and why the channel was "
+"assigned in the browser console (for troubleshooting only)."
 msgstr ""
 
-#: includes/class-capysele-settings.php:182
+#: includes/class-capysele-settings.php:201
 msgid "Automatically add the floating WhatsApp button to every page."
 msgstr ""
 
-#: includes/class-capysele-settings.php:183
-msgid "Add tracking to existing WhatsApp buttons/links matched by the CSS selector below."
+#: includes/class-capysele-settings.php:202
+msgid ""
+"Add tracking to existing WhatsApp buttons/links matched by the CSS selector "
+"below."
 msgstr ""
 
-#: includes/class-capysele-settings.php:196
-msgid "International format, digits only (country code + number, no + no spaces)."
+#: includes/class-capysele-settings.php:215
+msgid ""
+"International format, digits only (country code + number, no + no spaces)."
 msgstr ""
 
-#: includes/class-capysele-settings.php:203
-msgid "Only used when \"CSS Selector\" above is enabled — ignored otherwise. Example: .js-whatsapp-track or a[href*=\"wa.me\"]"
+#: includes/class-capysele-settings.php:222
+msgid ""
+"Only used when \"CSS Selector\" above is enabled — ignored otherwise. "
+"Example: .js-whatsapp-track or a[href*=\"wa.me\"]"
 msgstr ""
 
-#: includes/class-capysele-settings.php:210
-msgid "Available placeholders: {channel}, {utm_source}, {utm_medium}, {utm_campaign}, {utm_content}, {utm_term}, {gclid}, {gbraid}, {wbraid}, {fbclid}, {referrer}, {exit_page}, {exit_page_title}, {landing_page} (legacy alias of {exit_page}), {captured_at}"
+#: includes/class-capysele-settings.php:229
+msgid "Last click (default)"
+msgstr ""
+
+#: includes/class-capysele-settings.php:230
+msgid ""
+"Attributes the contact to the most recent identifiable source before the "
+"WhatsApp click. Each new entry with UTMs, ad click IDs or an external "
+"referrer replaces the previous one and is kept for 7 days from that capture. "
+"Use it to know which source preceded the contact."
+msgstr ""
+
+#: includes/class-capysele-settings.php:233
+msgid "First click"
+msgstr ""
+
+#: includes/class-capysele-settings.php:234
+msgid ""
+"Attributes the contact to the first identifiable source captured. It is kept "
+"for 7 days from that capture, even if other campaigns arrive later. Use it "
+"to know the initial source within that period."
+msgstr ""
+
+#: includes/class-capysele-settings.php:249
+msgid ""
+"Example: a person arrives from Google Ads on Monday, comes back from ChatGPT "
+"on Wednesday and clicks WhatsApp on Thursday. Last click shows ChatGPT; "
+"first click shows Google Ads. Browsing between pages or coming back without "
+"source signals does not erase a valid attribution."
+msgstr ""
+
+#: includes/class-capysele-settings.php:250
+msgid ""
+"Data is stored per browser and device. Switching models does not recover "
+"earlier visits that were not stored. To test a change, save the settings and "
+"reload the site page."
+msgstr ""
+
+#: includes/class-capysele-settings.php:258
+msgid ""
+"Available placeholders: {channel}, {utm_source}, {utm_medium}, "
+"{utm_campaign}, {utm_content}, {utm_term}, {gclid}, {gbraid}, {wbraid}, "
+"{fbclid}, {referrer}, {exit_page}, {exit_page_title}, {landing_page} (legacy "
+"alias of {exit_page}), {captured_at}"
 msgstr ""
 
 #: includes/class-capysele-shortcode.php:11

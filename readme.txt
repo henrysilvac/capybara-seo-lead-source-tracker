@@ -5,7 +5,7 @@ Tags: whatsapp, utm, tracking, leads, attribution
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.8.0
+Stable tag: 0.9.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Author URI: https://seo.pe
@@ -14,12 +14,12 @@ Captures UTMs and click IDs and adds them to your WhatsApp messages via a floati
 
 == Description ==
 
-Capybara SEO Lead Source Tracker captures UTM parameters and click IDs (gclid, gbraid, wbraid, fbclid) from the URL, stores them in localStorage (first-touch attribution, kept for 7 days by default from the initial capture), and automatically updates WhatsApp links with a dynamic message that includes the lead source data.
+Capybara SEO Lead Source Tracker captures UTM parameters and click IDs (gclid, gbraid, wbraid, fbclid) from the URL, stores them in localStorage with a configurable attribution model (last click by default, or first click; kept for 7 days from the selected capture), and automatically updates WhatsApp links with a dynamic message that includes the lead source data.
 
 **Key features:**
 
 * Captures utm_source, utm_medium, utm_campaign, utm_content, utm_term, gclid, gbraid, wbraid, fbclid
-* First-touch attribution: the first identifiable visit is preserved across pages and later visits for 7 days by default, counted from the initial capture — later visits and campaigns don't replace it or restart the period
+* Configurable attribution model: last click (default) credits the most recent identifiable entry before the WhatsApp click; first click keeps the first identifiable entry. Both keep the selected source for 7 days from its capture, and visits without source signals never erase or renew it
 * Automatic channel detection: Google Ads, Meta Ads, Organic, Referral, and AI platforms (ChatGPT, Claude, Gemini, Copilot, Perplexity)
 * Lines with no captured data are omitted from the WhatsApp message
 * Combinable button placements: Floating button (auto-injected, zero setup) and CSS Selector (reuse existing buttons) can both be turned on at once, plus the always-available [capysele_button] shortcode — all sharing the same number and tracking
@@ -40,13 +40,14 @@ Use {exit_page} for new templates. The legacy {landing_page} placeholder remains
 2. Activate the plugin.
 3. Go to Settings > Capybara SEO Lead Source Tracker.
 4. Set your WhatsApp number and message template.
-5. Turn on "Floating button" for a ready-to-use button with no further setup, and/or turn on "CSS Selector" with the CSS class of an existing button to add tracking to it — both can be enabled together. The [capysele_button] shortcode is always available regardless of these toggles.
-6. Test with a URL containing UTM parameters, e.g. ?utm_source=google&utm_medium=cpc&utm_campaign=test
+5. Choose the attribution model in section 3: "Last click" (default) or "First click".
+6. Turn on "Floating button" for a ready-to-use button with no further setup, and/or turn on "CSS Selector" with the CSS class of an existing button to add tracking to it — both can be enabled together. The [capysele_button] shortcode is always available regardless of these toggles.
+7. Test with a URL containing UTM parameters, e.g. ?utm_source=google&utm_medium=cpc&utm_campaign=test. After changing settings, reload the site page (and purge any HTML cache) before testing.
 
 == Screenshots ==
 
 1. Configure the receiving number and choose one or more button placements.
-2. Customize the message template with first-touch attribution placeholders.
+2. Customize the message template with attribution placeholders.
 3. Display the tracked floating button and shortcode button on a WordPress page.
 4. Send a prefilled WhatsApp message containing the captured lead-source data.
 
@@ -56,25 +57,35 @@ Use {exit_page} for new templates. The legacy {landing_page} placeholder remains
 
 Yes. Enable "CSS Selector" and set the selector to match your existing buttons (e.g. a[href*="wa.me"]) and the plugin will update their href automatically. This can be combined with the floating button at the same time.
 
-= What is first-touch attribution? =
+= Which attribution model should I choose? =
 
-The first identifiable visit (UTM parameters, click IDs, or an external referrer) is stored in the visitor's browser and kept as a complete set while they navigate to other pages or come back later. Later visits and campaigns do not replace it. This way, the original traffic source is preserved in the WhatsApp message.
+An identifiable entry is a page load with at least one UTM parameter, a click ID (gclid, gbraid, wbraid, fbclid), or an external referrer.
+
+* Last click (default): the most recent identifiable entry before the WhatsApp click. Each new entry replaces the whole previous record (fields are never mixed) and restarts the 7-day period. Use it to know which source preceded the contact.
+* First click: the first identifiable entry captured. Later entries don't replace it or restart the period. Use it to know the initial source within those 7 days.
+
+Example: a person arrives from Google Ads on Monday, comes back from ChatGPT on Wednesday and clicks WhatsApp on Thursday. Last click reports ChatGPT; first click reports Google Ads. In both models, browsing between pages or coming back without source signals does not erase a valid attribution — a direct visit never replaces a campaign.
+
+The model applies to the whole site. Switching models keeps the current capture with its original date; it cannot recover earlier visits that were never stored. Open tabs keep the setting they loaded with until they are reloaded.
 
 = How long is attribution kept? =
 
-First-touch attribution is kept in this browser's local storage for 7 days by default, counted from the initial capture. Later visits and campaigns don't replace the source or restart the period. Once it expires, the plugin stops using that record and deletes it the next time it runs; a new identifiable visit can then start a new attribution period.
+Attribution is kept in this browser's local storage for 7 days, counted from the selected capture. With last click, each new identifiable entry (including a reload of a URL that still carries UTMs or click IDs) replaces the record and restarts the period. With first click, later entries don't replace the source or restart the period. Visits without source signals and WhatsApp clicks never renew it in either model. Once it expires, the plugin stops using that record and deletes it the next time it runs; a new identifiable visit can then start a new attribution period.
 
-Attribution is stored per browser and device; it does not identify the same visitor across devices. {captured_at} shows the date of the initial capture, not of the current visit. Visits with no UTMs, click IDs or external referrer are not labeled as Organic — no channel is assigned.
+Attribution is stored per browser and device; it does not identify the same visitor across devices. {captured_at} shows the date of the selected capture: the initial one with first click, the most recent one with last click. When there is no valid capture it falls back to the time of the WhatsApp click, which is not evidence of a real capture. Visits with no UTMs, click IDs or external referrer are not labeled as Organic — no channel is assigned.
 
 = How are AI platforms detected? =
 
-When the first captured visit comes from chatgpt.com, chat.openai.com, claude.ai, gemini.google.com, copilot.microsoft.com, or perplexity.ai (including their subdomains), the channel is reported as "AI - ChatGPT", "AI - Claude", and so on. Paid UTMs, click IDs, and utm_medium=organic take priority; AI is assigned only when there is no click ID and utm_medium is empty or "referral". Lookalike domains (e.g. chatgpt.com.example.org) are not matched.
+When the selected capture comes from chatgpt.com, chat.openai.com, claude.ai, gemini.google.com, copilot.microsoft.com, or perplexity.ai (including their subdomains), the channel is reported as "AI - ChatGPT", "AI - Claude", and so on. Paid UTMs, click IDs, and utm_medium=organic take priority; AI is assigned only when there is no click ID and utm_medium is empty or "referral". Lookalike domains (e.g. chatgpt.com.example.org) are not matched.
 
 = What happens if a field has no data? =
 
 Lines in the message template whose placeholder has no captured value are automatically removed from the WhatsApp message.
 
 == Upgrade Notice ==
+
+= 0.9.0 =
+New attribution model setting. Last click is now the default, also on existing sites: newer campaigns will replace the stored source. Choose "First click" in section 3 to keep the previous behavior. Purge page caches after updating.
 
 = 0.8.0 =
 First-touch attribution now expires 7 days after the initial capture and is no longer replaced by later visits. Adds AI platform channels and the {exit_page_title} placeholder. Saved templates are not changed.
@@ -83,6 +94,13 @@ First-touch attribution now expires 7 days after the initial capture and is no l
 Adds {exit_page} for the complete click-time URL. Existing {landing_page} templates remain compatible and now receive that same URL; saved attribution data and settings require no migration.
 
 == Changelog ==
+
+= 0.9.0 =
+* Added an "Attribution model" setting (section 3) with two options: Last click (default) and First click, each explained in the settings page with an example.
+* Last click: each new identifiable entry (UTMs, click IDs or an external referrer) replaces the whole stored record — fields from earlier visits are never mixed — and restarts the 7-day period. Visits without source signals and WhatsApp clicks never replace or renew it.
+* Behavior change: sites updated from earlier versions use last click until "First click" is chosen and saved. A capture stored before the update is kept with its original date until it expires or a new identifiable entry arrives.
+* Debug mode now also logs the active attribution model.
+* Updated the settings help, quick setup, retention and {captured_at} explanations for both models.
 
 = 0.8.0 =
 * Added AI platform channels detected from the referrer domain: ChatGPT (chatgpt.com, chat.openai.com), Claude, Gemini, Copilot, and Perplexity. Paid UTMs, click IDs, and utm_medium=organic keep priority; lookalike domains are not matched.

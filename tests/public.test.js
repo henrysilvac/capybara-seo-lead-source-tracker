@@ -104,7 +104,17 @@ function createRuntime(options) {
     },
   };
 
-  const localStorage = options.storageUnavailable
+  const localStorage = options.storageWriteFails
+    ? {
+      getItem(key) {
+        return storage.has(key) ? storage.get(key) : null;
+      },
+      setItem() { throw new Error('QuotaExceededError'); },
+      removeItem(key) {
+        storage.delete(key);
+      },
+    }
+    : options.storageUnavailable
     ? {
       getItem() { throw new Error('SecurityError'); },
       setItem() { throw new Error('SecurityError'); },
@@ -366,7 +376,7 @@ test('first-touch: a valid capture is kept intact against new UTMs, click IDs an
         href: entry.href,
         referrer: entry.referrer,
         storedData: firstTouchData,
-        config: { template: CHANNEL_TEMPLATE + '\ncampaign:{utm_campaign}\ngclid:{gclid}' },
+        config: { attributionModel: 'first_click', template: CHANNEL_TEMPLATE + '\ncampaign:{utm_campaign}\ngclid:{gclid}' },
       });
 
       assert.deepEqual(runtime.storedValue(), firstTouchData);
@@ -411,6 +421,7 @@ test('first-touch: visits inside the window never renew captured_at', () => {
   const { runtime } = loadAndClick({
     href: 'https://example.test/?utm_source=google&utm_medium=cpc&gclid=Again',
     storedData: record,
+    config: { attributionModel: 'first_click' },
   });
   assert.equal(runtime.storedValue().captured_at, record.captured_at);
 });
@@ -577,6 +588,7 @@ test('debug: logs capture date, expiry and the reason for the effective channel'
   assert.ok(entry, 'expected a debug entry with channel_reason');
   assert.equal(entry[1].channel, 'Google Ads');
   assert.equal(entry[1].channel_reason, 'utm_paid_google');
+  assert.equal(entry[1].attribution_model, 'last_click');
   assert.equal(entry[1].captured_at, firstTouchData.captured_at);
   assert.equal(entry[1].expires_at, isoAt(Date.parse(firstTouchData.captured_at) + TTL_MS));
 });
@@ -753,7 +765,7 @@ test('AI: a first-touch AI capture survives a later Google entry and a later pai
         href,
         referrer,
         storedData: record,
-        config: { template: 'channel:{channel}', channels: AI_LABELS },
+        config: { attributionModel: 'first_click', template: 'channel:{channel}', channels: AI_LABELS },
       });
       assert.equal(message, 'channel:IA - ChatGPT');
       assert.deepEqual(runtime.storedValue(), record);
@@ -766,7 +778,7 @@ test('AI: a first-touch Google capture stays Organic when a later visit comes fr
   const { message, runtime } = loadAndClick({
     referrer: 'https://chatgpt.com/',
     storedData: record,
-    config: { template: 'channel:{channel}', channels: AI_LABELS },
+    config: { attributionModel: 'first_click', template: 'channel:{channel}', channels: AI_LABELS },
   });
   assert.equal(message, 'channel:Orgánico');
   assert.deepEqual(runtime.storedValue(), record);
@@ -797,4 +809,310 @@ test('regression: AI on an earlier day → return without signals → internal p
   runtime.click(button);
   assert.equal(messageFromUrl(runtime.openedUrls[0]), '[Página:Servicios | Calytec]\n[canal:IA - ChatGPT]');
   assert.deepEqual(runtime.storedValue(), record);
+});
+
+/* ------------------------------------------------------------------ */
+/* T4 — Modelo de atribución: último clic (predeterminado) y primer clic */
+/* ------------------------------------------------------------------ */
+
+// Captura B con campos distintos a firstTouchData (A) para detectar mezclas.
+const META_B_HREF = 'https://example.test/?utm_source=facebook&utm_medium=paid&utm_campaign=b-campaign';
+const FULL_TEMPLATE = CHANNEL_TEMPLATE + '\ncampaign:{utm_campaign}\ngclid:{gclid}\ncaptured:{captured_at}';
+
+test('model: last click is effective by default and for missing or invalid configuration', async (t) => {
+  for (const [name, value] of [
+    ['absent', undefined],
+    ['explicit last_click', 'last_click'],
+    ['unknown string', 'linear'],
+    ['wrong case', 'FIRST_CLICK'],
+    ['number', 1],
+    ['null', null],
+    ['array', ['first_click']],
+  ]) {
+    await t.test(name, () => {
+      const config = { template: CHANNEL_TEMPLATE };
+      if (value !== undefined) config.attributionModel = value;
+      const { runtime, message } = loadAndClick({
+        href: META_B_HREF,
+        storedData: firstTouchData,
+        config,
+      });
+      assert.match(message, /channel:Meta Ads/);
+      assert.equal(runtime.storedValue().utm_campaign, 'b-campaign');
+    });
+  }
+});
+
+test('model: A Google Ads, two days later B Meta Ads (A03)', async (t) => {
+  const recordA = Object.assign({}, firstTouchData, { captured_at: isoAt(NOW - 2 * DAY_MS) });
+
+  await t.test('last click uses only B and expires seven days after B', () => {
+    const { runtime, message } = loadAndClick({
+      href: META_B_HREF,
+      storedData: recordA,
+      config: { template: FULL_TEMPLATE, debug: true },
+    });
+    assert.equal(
+      message,
+      `channel:Meta Ads\nsource:facebook\nmedium:paid\ncampaign:b-campaign\ncaptured:${isoAt(NOW)}`
+    );
+    assert.equal(runtime.storedValue().captured_at, isoAt(NOW));
+    const entry = runtime.logs.find((args) => args[1] && args[1].channel_reason);
+    assert.equal(entry[1].expires_at, isoAt(NOW + TTL_MS));
+
+    assert.equal(loadAndClick({ storedData: runtime.storedValue(), now: NOW + TTL_MS - 1 }).runtime.storedValue().utm_source, 'facebook');
+    assert.equal(loadAndClick({ storedData: runtime.storedValue(), now: NOW + TTL_MS }).runtime.storedValue(), null);
+  });
+
+  await t.test('first click keeps A and its original expiry', () => {
+    const { runtime, message } = loadAndClick({
+      href: META_B_HREF,
+      storedData: recordA,
+      config: { attributionModel: 'first_click', template: FULL_TEMPLATE },
+    });
+    assert.match(message, /channel:Google Ads/);
+    assert.match(message, /campaign:home-campaign/);
+    assert.deepEqual(runtime.storedValue(), recordA);
+    assert.equal(loadAndClick({ storedData: recordA, now: NOW + 5 * DAY_MS, config: { attributionModel: 'first_click' } }).runtime.storedValue(), null);
+  });
+});
+
+test('model: last click replaces the whole record, never merging fields from A (A04)', async (t) => {
+  for (const [name, href, referrer, expectedChannel] of [
+    ['B with only an AI referrer', 'https://example.test/', 'https://chatgpt.com/', 'channel:AI - ChatGPT'],
+    ['B with a partial UTM', 'https://example.test/?utm_campaign=only-campaign', '', null],
+  ]) {
+    await t.test(name, () => {
+      const { runtime, message } = loadAndClick({
+        href,
+        referrer,
+        storedData: firstTouchData,
+        config: { template: FULL_TEMPLATE },
+      });
+      const stored = runtime.storedValue();
+      for (const field of ['utm_source', 'utm_medium', 'gclid']) {
+        assert.equal(stored[field], '', field);
+      }
+      assert.doesNotMatch(message, /FirstClick123|home-campaign|google\.com|source:google/);
+      if (expectedChannel) {
+        assert.match(message, new RegExp('^' + expectedChannel));
+      } else {
+        assert.equal(stored.utm_campaign, 'only-campaign');
+        assert.doesNotMatch(message, /channel:/);
+      }
+    });
+  }
+
+  await t.test('first click keeps A intact', () => {
+    const { runtime } = loadAndClick({
+      referrer: 'https://chatgpt.com/',
+      storedData: firstTouchData,
+      config: { attributionModel: 'first_click' },
+    });
+    assert.deepEqual(runtime.storedValue(), firstTouchData);
+  });
+});
+
+test('model: visits without signals keep a valid record and its date in both models (A05)', async (t) => {
+  for (const model of ['last_click', 'first_click']) {
+    for (const [name, referrer] of [['direct visit', ''], ['internal navigation', 'https://example.test/blog']]) {
+      await t.test(`${model}: ${name}`, () => {
+        const { runtime, message } = loadAndClick({
+          href: 'https://example.test/servicios',
+          referrer,
+          storedData: firstTouchData,
+          config: { attributionModel: model, template: CHANNEL_TEMPLATE },
+        });
+        assert.match(message, /channel:Google Ads/);
+        assert.deepEqual(runtime.storedValue(), firstTouchData);
+      });
+
+      await t.test(`${model}: ${name} without a record creates nothing`, () => {
+        const { runtime, message } = loadAndClick({
+          href: 'https://example.test/servicios',
+          referrer,
+          config: { attributionModel: model, template: CHANNEL_TEMPLATE },
+        });
+        assert.equal(message, '');
+        assert.equal(runtime.storedValue(), null);
+      });
+    }
+  }
+});
+
+test('model: TTL boundary and expired records behave the same in both models (A06, A07)', async (t) => {
+  for (const model of ['last_click', 'first_click']) {
+    await t.test(`${model}: valid one millisecond before the limit`, () => {
+      const record = Object.assign({}, firstTouchData, { captured_at: isoAt(NOW - TTL_MS + 1) });
+      const { runtime } = loadAndClick({ storedData: record, config: { attributionModel: model } });
+      assert.deepEqual(runtime.storedValue(), record);
+    });
+
+    await t.test(`${model}: expired exactly at the limit, only capysele_data is removed`, () => {
+      const record = Object.assign({}, firstTouchData, { captured_at: isoAt(NOW - TTL_MS) });
+      const { runtime, message } = loadAndClick({
+        storedData: record,
+        otherStorage: { unrelated_key: 'keep-me' },
+        config: { attributionModel: model, template: CHANNEL_TEMPLATE },
+      });
+      assert.equal(message, '');
+      assert.equal(runtime.storedValue(), null);
+      assert.equal(runtime.storage.get('unrelated_key'), 'keep-me');
+    });
+
+    await t.test(`${model}: expired A + new entry B stores B with a new date`, () => {
+      const record = Object.assign({}, firstTouchData, { captured_at: isoAt(NOW - 8 * DAY_MS) });
+      const { runtime } = loadAndClick({ href: META_B_HREF, storedData: record, config: { attributionModel: model } });
+      const stored = runtime.storedValue();
+      assert.equal(stored.utm_campaign, 'b-campaign');
+      assert.equal(stored.gclid, '');
+      assert.equal(stored.captured_at, isoAt(NOW));
+    });
+  }
+});
+
+test('model: switching models keeps a valid record with its original date (A09)', async (t) => {
+  await t.test('first → last: kept until a new identifiable entry', () => {
+    const kept = loadAndClick({ storedData: firstTouchData, config: { attributionModel: 'last_click' } });
+    assert.deepEqual(kept.runtime.storedValue(), firstTouchData);
+    const replaced = loadAndClick({ href: META_B_HREF, storedData: firstTouchData, config: { attributionModel: 'last_click' } });
+    assert.equal(replaced.runtime.storedValue().utm_campaign, 'b-campaign');
+  });
+
+  await t.test('last → first: the current capture becomes the starting point and stops being replaced', () => {
+    const { runtime } = loadAndClick({ href: META_B_HREF, storedData: firstTouchData, config: { attributionModel: 'first_click' } });
+    assert.deepEqual(runtime.storedValue(), firstTouchData);
+  });
+
+  await t.test('an expired record is not recovered by switching', () => {
+    const record = Object.assign({}, firstTouchData, { captured_at: isoAt(NOW - TTL_MS) });
+    for (const model of ['last_click', 'first_click']) {
+      assert.equal(loadAndClick({ storedData: record, config: { attributionModel: model } }).runtime.storedValue(), null);
+    }
+  });
+});
+
+test('model: reloading with the same UTMs renews only in last click; reloads without signals renew in neither (A10)', async (t) => {
+  const href = 'https://example.test/?utm_source=google&utm_medium=cpc&utm_campaign=home-campaign';
+  const record = Object.assign({}, firstTouchData, { captured_at: isoAt(NOW - 3 * DAY_MS) });
+
+  await t.test('last click renews on a reload that keeps the UTMs', () => {
+    const { runtime } = loadAndClick({ href, storedData: record });
+    assert.equal(runtime.storedValue().captured_at, isoAt(NOW));
+  });
+
+  await t.test('first click does not renew', () => {
+    const { runtime } = loadAndClick({ href, storedData: record, config: { attributionModel: 'first_click' } });
+    assert.equal(runtime.storedValue().captured_at, record.captured_at);
+  });
+
+  for (const model of ['last_click', 'first_click']) {
+    await t.test(`${model}: reload without signals does not renew`, () => {
+      const { runtime } = loadAndClick({ href: 'https://example.test/', storedData: record, config: { attributionModel: model } });
+      assert.equal(runtime.storedValue().captured_at, record.captured_at);
+    });
+  }
+});
+
+test('model: a tab left open past the limit does not recapture its URL params in either model (A11)', async (t) => {
+  for (const model of ['last_click', 'first_click']) {
+    await t.test(model, () => {
+      const button = linkButton();
+      const runtime = createRuntime({
+        href: 'https://example.test/?utm_source=google&utm_medium=cpc&gclid=LoadClick',
+        elementsBySelector: { '.capysele-button': [button] },
+        config: { attributionModel: model, template: CHANNEL_TEMPLATE },
+      });
+      runtime.clock.now = NOW + TTL_MS;
+      runtime.click(button);
+      assert.equal(messageFromUrl(button.getAttribute('href')), '');
+      assert.equal(runtime.storedValue(), null);
+    });
+  }
+});
+
+test('model: storage failures never throw and use the effective capture in memory (A12)', async (t) => {
+  for (const model of ['last_click', 'first_click']) {
+    await t.test(`${model}: storage blocked`, () => {
+      const { message } = loadAndClick({
+        href: META_B_HREF,
+        storageUnavailable: true,
+        config: { attributionModel: model, template: CHANNEL_TEMPLATE },
+      });
+      assert.match(message, /channel:Meta Ads/);
+    });
+  }
+
+  await t.test('last_click: write fails over a stored A, the page uses B in memory', () => {
+    const { message } = loadAndClick({
+      href: META_B_HREF,
+      storageWriteFails: true,
+      storedData: firstTouchData,
+      config: { template: CHANNEL_TEMPLATE },
+    });
+    assert.match(message, /channel:Meta Ads/);
+  });
+});
+
+test('model: a click reads the shared current capture written by another tab, without renewing it (A14)', async (t) => {
+  for (const model of ['last_click', 'first_click']) {
+    await t.test(model, () => {
+      const button = linkButton();
+      const runtime = createRuntime({
+        href: 'https://example.test/',
+        storedData: firstTouchData,
+        elementsBySelector: { '.capysele-button': [button] },
+        config: { attributionModel: model, template: CHANNEL_TEMPLATE },
+      });
+      // Otra pestaña guardó B (p. ej. tras vencer A en primer clic).
+      const recordB = Object.assign({}, aiRecord(''), {
+        utm_source: 'facebook', utm_medium: 'paid', captured_at: isoAt(NOW - 60 * 1000),
+      });
+      runtime.storage.set('capysele_data', JSON.stringify(recordB));
+      runtime.click(button);
+      assert.match(messageFromUrl(button.getAttribute('href')), /channel:Meta Ads/);
+      assert.deepEqual(runtime.storedValue(), recordB);
+    });
+  }
+});
+
+test('model: every button type uses the same effective source in both models (A15)', async (t) => {
+  const placements = [
+    { name: 'shortcode', make: linkButton, selector: '.capysele-button', config: {} },
+    { name: 'floating button', make: linkButton, selector: '.capysele-floating-button', config: { floatingEnabled: true } },
+    { name: 'CSS selector', make: linkButton, selector: '.tracked', config: { selectorEnabled: true } },
+    { name: 'Joinchat', make: joinchatButton, selector: '.joinchat', config: { selector: '.joinchat', selectorEnabled: true } },
+  ];
+  for (const [model, expected] of [['last_click', 'channel:Meta Ads\nsource:facebook'], ['first_click', 'channel:Google Ads\nsource:google']]) {
+    for (const placement of placements) {
+      await t.test(`${model}: ${placement.name}`, () => {
+        const button = placement.make();
+        const runtime = createRuntime({
+          href: META_B_HREF,
+          storedData: firstTouchData,
+          elementsBySelector: { [placement.selector]: [button] },
+          config: Object.assign({ attributionModel: model, template: 'channel:{channel}\nsource:{utm_source}\npage:{exit_page_title}' }, placement.config),
+        });
+        runtime.document.title = 'Click page';
+        runtime.click(button);
+        const url = placement.name === 'Joinchat' ? runtime.openedUrls[0] : button.getAttribute('href');
+        assert.ok(url.startsWith('https://wa.me/15550101234?text='));
+        assert.equal(messageFromUrl(url), expected + '\npage:Click page');
+      });
+    }
+  }
+});
+
+test('model: {captured_at} without a capture keeps the click-time fallback (A18)', () => {
+  const { message } = loadAndClick({ config: { template: 'Hola\ncaptured:{captured_at}' } });
+  assert.equal(message, `Hola\ncaptured:${isoAt(NOW)}`);
+});
+
+test('model: debug info reports the configured model', () => {
+  const { runtime } = loadAndClick({
+    storedData: firstTouchData,
+    config: { debug: true, attributionModel: 'first_click' },
+  });
+  const entry = runtime.logs.find((args) => args[1] && args[1].channel_reason);
+  assert.equal(entry[1].attribution_model, 'first_click');
 });

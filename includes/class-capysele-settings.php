@@ -4,9 +4,13 @@ if (!defined('ABSPATH')) {
 }
 
 class CAPYSELE_Settings {
-    // First-touch attribution is kept in the visitor's browser for this many
-    // days, counted from the initial capture (never renewed by later visits).
+    // Attribution is kept in the visitor's browser for this many days, counted
+    // from the selected capture: the first one (first click) or the latest
+    // identifiable one (last click). Visits without signals never renew it.
     const DEFAULT_ATTRIBUTION_DAYS = 7;
+
+    const ATTRIBUTION_MODELS = ['last_click', 'first_click'];
+    const DEFAULT_ATTRIBUTION_MODEL = 'last_click';
 
     public static function get_attribution_days() {
         $days = absint(self::DEFAULT_ATTRIBUTION_DAYS);
@@ -17,10 +21,19 @@ class CAPYSELE_Settings {
         return self::get_attribution_days() * DAY_IN_SECONDS * 1000;
     }
 
+    // Only the exact strings in ATTRIBUTION_MODELS are accepted; anything else
+    // (missing, arrays, numbers, unknown values) resolves to last click.
+    public static function normalize_attribution_model($value) {
+        return (is_string($value) && in_array($value, self::ATTRIBUTION_MODELS, true))
+            ? $value
+            : self::DEFAULT_ATTRIBUTION_MODEL;
+    }
+
     public static function get_defaults() {
         return [
             'enabled' => 1,
             'phone' => '51999999999',
+            'attribution_model' => self::DEFAULT_ATTRIBUTION_MODEL,
             'message_template' => __("Hi, I'd like more information.\n\n*[Do not modify — reference code to assign you the right advisor]:*\n[channel:{channel}]\n[source:{utm_source}]\n[medium:{utm_medium}]\n[campaign:{utm_campaign}]\n[term:{utm_term}]\n[gclid:{gclid}]", 'capybara-seo-lead-source-tracker'),
             'floating_enabled' => 1,
             'selector_enabled' => 0,
@@ -42,6 +55,9 @@ class CAPYSELE_Settings {
             $settings['floating_enabled'] = ($saved['mode'] === 'floating') ? 1 : 0;
             $settings['selector_enabled'] = ($saved['mode'] === 'selector') ? 1 : 0;
         }
+
+        // Settings saved before 0.9.0 have no model and resolve to last click.
+        $settings['attribution_model'] = self::normalize_attribution_model($settings['attribution_model']);
 
         return $settings;
     }
@@ -79,7 +95,8 @@ class CAPYSELE_Settings {
                 'title'    => __('3. Message & attribution data', 'capybara-seo-lead-source-tracker'),
                 'callback' => [__CLASS__, 'render_message_section_intro'],
                 'fields'   => [
-                    'message_template' => __('Message template', 'capybara-seo-lead-source-tracker'),
+                    'attribution_model' => __('Attribution model', 'capybara-seo-lead-source-tracker'),
+                    'message_template'  => __('Message template', 'capybara-seo-lead-source-tracker'),
                 ],
             ],
             'capysele_section_advanced' => [
@@ -157,6 +174,8 @@ class CAPYSELE_Settings {
 
         $output['selector'] = isset($input['selector']) ? sanitize_text_field((string) $input['selector']) : $defaults['selector'];
 
+        $output['attribution_model'] = self::normalize_attribution_model(isset($input['attribution_model']) ? $input['attribution_model'] : null);
+
         if (isset($input['message_template'])) {
             $message = wp_kses_post((string) $input['message_template']);
             $output['message_template'] = trim($message) !== '' ? $message : $defaults['message_template'];
@@ -201,6 +220,35 @@ class CAPYSELE_Settings {
                 ?>
                 <input type="text" class="regular-text" name="<?php echo esc_attr(CAPYSELE_OPTION_KEY); ?>[selector]" value="<?php echo esc_attr($settings['selector']); ?>" placeholder=".js-whatsapp-track" />
                 <p class="description"><?php esc_html_e('Only used when "CSS Selector" above is enabled — ignored otherwise. Example: .js-whatsapp-track or a[href*="wa.me"]', 'capybara-seo-lead-source-tracker'); ?></p>
+                <?php
+                break;
+
+            case 'attribution_model':
+                $models = [
+                    'last_click'  => [
+                        'label'       => __('Last click (default)', 'capybara-seo-lead-source-tracker'),
+                        'description' => __('Attributes the contact to the most recent identifiable source before the WhatsApp click. Each new entry with UTMs, ad click IDs or an external referrer replaces the previous one and is kept for 7 days from that capture. Use it to know which source preceded the contact.', 'capybara-seo-lead-source-tracker'),
+                    ],
+                    'first_click' => [
+                        'label'       => __('First click', 'capybara-seo-lead-source-tracker'),
+                        'description' => __('Attributes the contact to the first identifiable source captured. It is kept for 7 days from that capture, even if other campaigns arrive later. Use it to know the initial source within that period.', 'capybara-seo-lead-source-tracker'),
+                    ],
+                ];
+                ?>
+                <fieldset class="capysele-model-options" aria-describedby="capysele-attribution-model-help">
+                    <legend class="screen-reader-text"><?php esc_html_e('Attribution model', 'capybara-seo-lead-source-tracker'); ?></legend>
+                    <?php foreach ($models as $value => $model) : ?>
+                        <label class="capysele-model-option">
+                            <input type="radio" name="<?php echo esc_attr(CAPYSELE_OPTION_KEY); ?>[attribution_model]" value="<?php echo esc_attr($value); ?>" aria-describedby="capysele-model-<?php echo esc_attr($value); ?>" <?php checked($settings['attribution_model'], $value); ?> />
+                            <strong><?php echo esc_html($model['label']); ?></strong>
+                            <span id="capysele-model-<?php echo esc_attr($value); ?>" class="description"><?php echo esc_html($model['description']); ?></span>
+                        </label>
+                    <?php endforeach; ?>
+                </fieldset>
+                <div id="capysele-attribution-model-help">
+                    <p class="description"><?php esc_html_e('Example: a person arrives from Google Ads on Monday, comes back from ChatGPT on Wednesday and clicks WhatsApp on Thursday. Last click shows ChatGPT; first click shows Google Ads. Browsing between pages or coming back without source signals does not erase a valid attribution.', 'capybara-seo-lead-source-tracker'); ?></p>
+                    <p class="description"><?php esc_html_e('Data is stored per browser and device. Switching models does not recover earlier visits that were not stored. To test a change, save the settings and reload the site page.', 'capybara-seo-lead-source-tracker'); ?></p>
+                </div>
                 <?php
                 break;
 

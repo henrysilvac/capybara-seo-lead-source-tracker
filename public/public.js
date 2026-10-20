@@ -12,6 +12,8 @@
     var ms = Number(value);
     return value !== null && isFinite(ms) && ms > 0 ? ms : DEFAULT_TTL_MS;
   })(capysele_config.attributionTtlMs);
+  // Solo 'first_click' activa primer clic; ausencia o valor inválido → último clic.
+  const ATTRIBUTION_MODEL = capysele_config.attributionModel === 'first_click' ? 'first_click' : 'last_click';
 
   function isExternalReferrer(referrer) {
     if (!referrer) return false;
@@ -103,8 +105,9 @@
     ].some(Boolean);
   }
 
-  // First-touch: la primera captura válida se conserva completa durante
-  // ATTRIBUTION_TTL_MS desde su captured_at, sin renovarse por visitas.
+  // La captura seleccionada (primera o última identificable, según el modelo)
+  // se conserva completa durante ATTRIBUTION_TTL_MS desde su captured_at.
+  // Las visitas sin señales nunca la renuevan.
   function getExpiresAt(data) {
     var capturedAt = Date.parse(data && data.captured_at);
     return isFinite(capturedAt) ? capturedAt + ATTRIBUTION_TTL_MS : NaN;
@@ -150,12 +153,15 @@
 
   function saveData(current) {
     const stored = getValidStored();
-    if (stored) {
+    // Primer clic: una captura vigente nunca se reemplaza.
+    if (ATTRIBUTION_MODEL === 'first_click' && stored) {
       return stored;
     }
 
+    // Último clic: solo una entrada identificable reemplaza la captura vigente,
+    // siempre como registro completo y sin mezclar campos anteriores.
     if (!hasAttributionData(current)) {
-      return {};
+      return stored || {};
     }
 
     try {
@@ -238,6 +244,7 @@
     var classification = classifyChannel(data);
     var expiresAt = getExpiresAt(data);
     return {
+      attribution_model: ATTRIBUTION_MODEL,
       channel: classification.channel,
       channel_reason: classification.reason,
       captured_at: data.captured_at || '',
